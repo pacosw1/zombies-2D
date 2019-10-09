@@ -12,15 +12,19 @@ export enum CharacterDirection {
 
 class Character {
   private gravity = 9.8;
+  private lastFired = 0;
+  private fireRate = 10;
+  private time;
   private aim = { x: 0, y: 0 };
   private position: coords = [0, 0];
   private direction = { x: 0, y: 0 };
   private mouse = new MouseEvent("player");
-  private characterWidth: number = 80;
-  private characterHeight: number = 100;
+  private characterWidth: number = 50;
+  private characterHeight: number = 50;
   private frameCounter = 0;
   private currentFrame = 0;
   private speed = 5;
+  private firing = false;
   private jumping = false;
   private bullets: Bullet[] = [];
   private hooking = false;
@@ -30,6 +34,7 @@ class Character {
     const { context } = GameContext;
     const { width, height } = context.canvas;
     this.characterImage.src = spritesheet;
+    this.time = new Date().getTime();
 
     this.position = [
       (width - this.characterWidth) / 2,
@@ -39,8 +44,8 @@ class Character {
 
   public mouseMoveHandler = event => {
     if (!this.hooking) {
-      this.aim.x = event.clientX - 29;
-      this.aim.y = event.clientY - 139;
+      this.aim.x = event.offsetX;
+      this.aim.y = event.offsetY;
     }
   };
   public keydownHandler = (key: string) => {
@@ -58,7 +63,7 @@ class Character {
         this.direction.y = 1;
         break;
       case "f":
-        this.fire();
+        this.firing = true;
         break;
     }
   };
@@ -70,6 +75,7 @@ class Character {
     ) {
       this.direction.x = 0;
     }
+    if (key === "f") this.firing = false;
     if (
       (key === "w" && this.direction.y === -1) ||
       (key === "s" && this.direction.y === 1)
@@ -87,23 +93,21 @@ class Character {
   };
 
   public fire = () => {
-    console.log(this.bullets);
-    this.bullets.push(
-      new Bullet(
-        this.position[1] +
-          " " +
-          this.position[0] +
-          " " +
-          this.aim.x +
-          "" +
-          Date.now() +
-          this.aim.y,
-        { x: this.position[0], y: this.position[1] },
-        { x: this.aim.x, y: this.aim.y },
-        10,
-        10
-      )
-    );
+    if ((this.time - this.lastFired) / 1000 >= 1 / this.fireRate) {
+      this.bullets.push(
+        new Bullet(
+          Date.now() + this.aim.y,
+          {
+            x: this.position[0],
+            y: this.position[1]
+          },
+          { x: this.aim.x, y: this.aim.y },
+          10,
+          10
+        )
+      );
+      this.lastFired = new Date().getTime();
+    }
   };
 
   public moveLogic = xPos => {
@@ -119,10 +123,14 @@ class Character {
     }
   };
   public update = () => {
+    this.time = new Date().getTime();
     const { context } = GameContext;
 
     const { width, height } = context.canvas;
     let [xPos, yPos] = this.position;
+    if (this.firing) {
+      this.fire();
+    }
     // this.jumpLogic(width, height, yPos);
     this.moveLogic(xPos);
   };
@@ -139,7 +147,10 @@ class Character {
     context.beginPath();
 
     context.fillStyle = "lime";
-    context.fillRect(xPos - 50 / 2, yPos, 50, 50);
+    context.arc(xPos, yPos, 20, 0, 2 * Math.PI);
+    // context.moveTo(xPos, yPos);
+    // context.lineTo(this.aim.x, this.aim.y);
+    context.stroke();
     context.closePath();
     context.restore();
   };
