@@ -25,7 +25,6 @@ class PlayingScene extends Scene {
 
     this.character.update();
 
-    console.log(this.bullets);
     if (this.character.anyBullets()) {
       this.bullets.push(this.character.nextBullet());
     }
