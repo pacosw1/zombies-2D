@@ -16,18 +16,15 @@ class Character {
   private fireRate = 10;
   private time;
   private aim = { x: 0, y: 0 };
-  private position: coords = [0, 0];
+  private position = { x: 0, y: 0 };
   private direction = { x: 0, y: 0 };
-  private mouse = new MouseEvent("player");
   private characterWidth: number = 50;
   private characterHeight: number = 50;
   private frameCounter = 0;
   private currentFrame = 0;
   private speed = 5;
   private firing = false;
-  private jumping = false;
   private bullets: Bullet[] = [];
-  private hooking = false;
   private characterImage: HTMLImageElement = new Image();
 
   constructor() {
@@ -36,17 +33,15 @@ class Character {
     this.characterImage.src = spritesheet;
     this.time = new Date().getTime();
 
-    this.position = [
-      (width - this.characterWidth) / 2,
-      height * 0.75 - this.characterHeight
-    ];
+    this.position = {
+      x: (width - this.characterWidth) / 2,
+      y: height * 0.75 - this.characterHeight
+    };
   }
 
   public mouseMoveHandler = event => {
-    if (!this.hooking) {
-      this.aim.x = event.offsetX;
-      this.aim.y = event.offsetY;
-    }
+    this.aim.x = event.offsetX;
+    this.aim.y = event.offsetY;
   };
   public keydownHandler = (key: string) => {
     switch (key) {
@@ -98,8 +93,8 @@ class Character {
         new Bullet(
           Date.now() + this.aim.y,
           {
-            x: this.position[0],
-            y: this.position[1]
+            x: this.position.x,
+            y: this.position.y
           },
           { x: this.aim.x, y: this.aim.y },
           10,
@@ -111,33 +106,37 @@ class Character {
   };
 
   public moveLogic = xPos => {
-    this.position[0] += this.direction.x * this.speed;
-    this.position[1] += this.direction.y * this.speed;
+    this.position.x += this.direction.x * this.speed;
+    this.position.y += this.direction.y * this.speed;
   };
-  public jumpLogic = (width, height, yPos) => {
-    if (yPos < height - 50 && !this.jumping) {
-      this.position[1] += this.gravity;
-    } else if (this.jumping) {
-      this.position[1] -= this.gravity;
-      if (this.position[1] <= height - 150) this.jumping = false;
-    }
-  };
+  // public jumpLogic = (width, height, yPos) => {
+  //   if (yPos < height - 50 && !this.jumping) {
+  //     this.position[1] += this.gravity;
+  //   } else if (this.jumping) {
+  //     this.position[1] -= this.gravity;
+  //     if (this.position[1] <= height - 150) this.jumping = false;
+  //   }
+  // };
   public update = () => {
     this.time = new Date().getTime();
     const { context } = GameContext;
 
     const { width, height } = context.canvas;
-    let [xPos, yPos] = this.position;
+    let { x, y } = this.position;
     if (this.firing) {
       this.fire();
     }
     // this.jumpLogic(width, height, yPos);
-    this.moveLogic(xPos);
+    this.moveLogic(x);
+  };
+
+  public getPosition = () => {
+    return this.position;
   };
 
   public render = () => {
     const { context } = GameContext;
-    let [xPos, yPos] = this.position;
+    let { x, y } = this.position;
     const paddingY = 4;
     const paddingX = 56.8;
     const spriteHeight = 85;
@@ -147,7 +146,7 @@ class Character {
     context.beginPath();
 
     context.fillStyle = "lime";
-    context.arc(xPos, yPos, 20, 0, 2 * Math.PI);
+    context.arc(x, y, 20, 0, 2 * Math.PI);
     // context.moveTo(xPos, yPos);
     // context.lineTo(this.aim.x, this.aim.y);
     context.stroke();

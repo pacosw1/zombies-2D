@@ -5,10 +5,11 @@ class Bullet {
   private target = { x: 0, y: 0 };
   private speed = 20;
   public id;
-  private radius = 20;
+  private radius = 2;
   private range;
   private angleX = 1;
   private angleY = 0;
+  private damage = 5;
 
   constructor(id, position, target, range, speed) {
     this.id = id;
@@ -19,6 +20,15 @@ class Bullet {
     this.setAngle();
   }
 
+  public bulletData = () => {
+    return {
+      radius: this.radius
+    };
+  };
+
+  public getDamage = () => {
+    return this.damage;
+  };
   public setAngle = () => {
     let deltaX = this.target.x - this.position.x;
     let deltaY = this.target.y - this.position.y;
@@ -28,8 +38,8 @@ class Bullet {
     this.angleX = Math.cos(angle);
     this.angleY = Math.sin(angle);
 
-    this.position.x = this.position.x + this.radius * Math.cos(angle);
-    this.position.y = this.position.y + this.radius * Math.sin(angle);
+    this.position.x = this.position.x + 20 * Math.cos(angle);
+    this.position.y = this.position.y + 20 * Math.sin(angle);
 
     // if (this.target.x > this.position.x) this.position.x += 50 / 2;
     // if (
@@ -49,15 +59,14 @@ class Bullet {
     context.beginPath();
 
     context.fillStyle = "black";
-    // context.arc(x, y, 5, 0, 2 * Math.PI);
-    context.fillRect(x, y, 5, 5);
+    context.arc(x, y, this.radius, 0, 2 * Math.PI);
     context.stroke();
     context.closePath();
     context.restore();
   };
 
-  public getPos = () => {
-    return this.position;
+  public getPosition = () => {
+    return { x: this.position.x, y: this.position.y, radius: this.radius };
   };
   public update = () => {
     console.log(this.angleX);
