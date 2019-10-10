@@ -35,6 +35,8 @@ class PlayingScene extends Scene {
    * 7. Animations
    * 8. Obstacles
    * 9. Game Over Screen
+   * 10. sound effects, music
+   * 11. Pause Game
    */
 
   private lastHit = 0;
