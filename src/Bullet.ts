@@ -20,15 +20,11 @@ class Bullet {
     this.setAngle();
   }
 
-  public bulletData = () => {
-    return {
-      radius: this.radius
-    };
-  };
-
   public getDamage = () => {
     return this.damage;
   };
+
+  //find direction trajectory for bullet
   public setAngle = () => {
     let deltaX = this.target.x - this.position.x;
     let deltaY = this.target.y - this.position.y;
@@ -40,15 +36,6 @@ class Bullet {
 
     this.position.x = this.position.x + 20 * Math.cos(angle);
     this.position.y = this.position.y + 20 * Math.sin(angle);
-
-    // if (this.target.x > this.position.x) this.position.x += 50 / 2;
-    // if (
-    //   this.position.x > this.position.x - 50 / 2 &&
-    //   this.position.x < this.position.x + 50 / 2
-    // ) {
-    //   if (this.target.y <= this.position.y) this.position.y -= 50 / 2;
-    //   else if (this.target.y >= this.position.y) this.position.y += 50 / 2;
-    // }
   };
 
   public render = () => {
@@ -60,7 +47,7 @@ class Bullet {
 
     context.fillStyle = "black";
     context.arc(x, y, this.radius, 0, 2 * Math.PI);
-    context.stroke();
+    context.fill();
     context.closePath();
     context.restore();
   };

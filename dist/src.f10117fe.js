@@ -228,15 +228,10 @@ function () {
     this.angleY = 0;
     this.damage = 5;
 
-    this.bulletData = function () {
-      return {
-        radius: _this.radius
-      };
-    };
-
     this.getDamage = function () {
       return _this.damage;
-    };
+    }; //find direction trajectory for bullet
+
 
     this.setAngle = function () {
       var deltaX = _this.target.x - _this.position.x;
@@ -245,14 +240,7 @@ function () {
       _this.angleX = Math.cos(angle);
       _this.angleY = Math.sin(angle);
       _this.position.x = _this.position.x + 20 * Math.cos(angle);
-      _this.position.y = _this.position.y + 20 * Math.sin(angle); // if (this.target.x > this.position.x) this.position.x += 50 / 2;
-      // if (
-      //   this.position.x > this.position.x - 50 / 2 &&
-      //   this.position.x < this.position.x + 50 / 2
-      // ) {
-      //   if (this.target.y <= this.position.y) this.position.y -= 50 / 2;
-      //   else if (this.target.y >= this.position.y) this.position.y += 50 / 2;
-      // }
+      _this.position.y = _this.position.y + 20 * Math.sin(angle);
     };
 
     this.render = function () {
@@ -264,7 +252,7 @@ function () {
       context.beginPath();
       context.fillStyle = "black";
       context.arc(x, y, _this.radius, 0, 2 * Math.PI);
-      context.stroke();
+      context.fill();
       context.closePath();
       context.restore();
     };
@@ -433,7 +421,7 @@ function () {
     this.speed = 5;
     this.firing = false;
     this.bullets = [];
-    this.characterImage = new Image();
+    this.characterImage = new Image(); //updates current mouse coordinates on screen
 
     this.mouseMoveHandler = function (event) {
       _this.aim.x = event.offsetX;
@@ -474,17 +462,21 @@ function () {
       if (key === "w" && _this.direction.y === -1 || key === "s" && _this.direction.y === 1) {
         _this.direction.y = 0;
       }
-    };
+    }; //pops next bullet to be fired from local array
+
 
     this.nextBullet = function () {
       return _this.bullets.pop();
-    };
+    }; //checks if any bullets in array
+
 
     this.anyBullets = function () {
       return _this.bullets.length > 0;
-    };
+    }; //
+
 
     this.fire = function () {
+      //waits n seconds before firing a bullet (based on fire rate)
       if ((_this.time - _this.lastFired) / 1000 >= 1 / _this.fireRate) {
         _this.bullets.push(new Bullet_1.default(Date.now() + _this.aim.y, {
           x: _this.position.x,
@@ -494,24 +486,19 @@ function () {
           y: _this.aim.y
         }, 10, 10));
 
-        _this.lastFired = new Date().getTime();
+        _this.lastFired = new Date().getTime(); //update last time a shot was fired
       }
     };
 
     this.moveLogic = function (xPos) {
       _this.position.x += _this.direction.x * _this.speed;
       _this.position.y += _this.direction.y * _this.speed;
-    }; // public jumpLogic = (width, height, yPos) => {
-    //   if (yPos < height - 50 && !this.jumping) {
-    //     this.position[1] += this.gravity;
-    //   } else if (this.jumping) {
-    //     this.position[1] -= this.gravity;
-    //     if (this.position[1] <= height - 150) this.jumping = false;
-    //   }
-    // };
-
+    };
 
     this.update = function () {
+      //updates the health bar
+      _this.healthBar.updateHealth(_this.health);
+
       _this.healthBar.update();
 
       _this.time = new Date().getTime();
@@ -524,6 +511,7 @@ function () {
           y = _b.y;
 
       if (_this.firing) {
+        //add bullets to array while firing = true
         _this.fire();
       } // this.jumpLogic(width, height, yPos);
 
@@ -531,8 +519,16 @@ function () {
       _this.moveLogic(x);
     };
 
+    this.updateHealth = function (damage) {
+      _this.health -= damage;
+    };
+
     this.getPosition = function () {
-      return _this.position;
+      return {
+        x: _this.position.x,
+        y: _this.position.y,
+        radius: _this.radius
+      };
     };
 
     this.render = function () {
@@ -547,12 +543,11 @@ function () {
       context.save();
       context.beginPath();
 
-      _this.healthBar.render();
+      _this.healthBar.render(); //render health bar
+
 
       context.fillStyle = "red";
-      context.arc(x, y, 20, 0, 2 * Math.PI); // context.moveTo(xPos, yPos);
-      // context.lineTo(this.aim.x, this.aim.y);
-
+      context.arc(x, y, _this.radius, 0, 2 * Math.PI);
       context.fill();
       context.closePath();
       context.restore();
@@ -574,7 +569,14 @@ function () {
   return Character;
 }();
 
-exports.default = Character;
+exports.default = Character; // public jumpLogic = (width, height, yPos) => {
+//   if (yPos < height - 50 && !this.jumping) {
+//     this.position[1] += this.gravity;
+//   } else if (this.jumping) {
+//     this.position[1] -= this.gravity;
+//     if (this.position[1] <= height - 150) this.jumping = false;
+//   }
+// };
 },{"./GameContext":"src/GameContext.ts","./Bullet":"src/Bullet.ts","/assets/spritesheet.png":"assets/spritesheet.png","./HP":"src/HP.ts"}],"src/Hp.ts":[function(require,module,exports) {
 "use strict";
 
@@ -725,8 +727,10 @@ function () {
   };
 
   Zombie.prototype.update = function () {
-    console.log(this.healthBar);
+    //update health bar
     this.healthBar.update();
+    this.healthBar.updateHealth(this.health); //update path to find player
+
     var deltaX = this.target.x - this.position.x;
     var deltaY = this.target.y - this.position.y;
     var angle = Math.atan2(deltaY, deltaX);
@@ -745,9 +749,10 @@ function () {
     context.save();
     context.beginPath();
     context.fillStyle = "green";
-    context.arc(x, y, this.radius, 0, 2 * Math.PI); // context.moveTo(xPos, yPos);
-    // context.lineTo(this.aim.x, this.aim.y);
+    context.arc(x, y, this.radius, 0, 2 * Math.PI); // context.moveTo(x, y);
+    // context.lineTo(this.target.x, this.target.y);
 
+    context.stroke();
     context.fill();
     context.strokeStyle = "lime";
     context.closePath();
@@ -924,13 +929,65 @@ function (_super) {
 
     _this.character = null;
     _this.bullets = [];
-    _this.enemies = [new Zombie_1.default({
+    _this.time = 0;
+    _this.round = 1;
+    _this.zombies = 1;
+    _this.multiplier = 1.5; //done
+
+    /**
+     * 1. Player can shoot based on mouse coordiantes
+     * 2. Player can move around
+     * 3. Zombies follow player around
+     * 4. Health bars
+     * 5. Bullets damage zombies
+     * 6. zombies damage player based on attack speed
+     */
+    //to do
+
+    /**
+     * 1. Implement rounds
+     * 2. Diferent types of zombies, with different stats (optional)
+     * 3. PowerUps (shields, dmg, etc..)  (optional)
+     * 4. Physics to prevent zombie overlap
+     * 5. spawn zombies randombly from outside all sides of canvas
+     * 6. Sprites
+     * 7. Animations
+     * 8. Obstacles
+     * 9. Game Over Screen
+     */
+
+    _this.lastHit = 0;
+    _this.enemies = [//zombie array
+    new Zombie_1.default({
       x: 0,
       y: 0
     }, 5, 20), new Zombie_1.default({
       x: 500,
       y: 0
     }, 5, 20)];
+
+    _this.randomizeSpawn = function () {
+      var _a = GameContext_1.default.context.canvas,
+          width = _a.width,
+          height = _a.height;
+    }; //checks for zombie and player collision
+
+
+    _this.checkZombieBite = function (zombie, player) {
+      var playerPos = player.getPosition();
+      var zombiePos = zombie.getPostion();
+      var dx = playerPos.x - zombiePos.x;
+      var dy = playerPos.y - zombiePos.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= playerPos.radius + zombiePos.radius + 5) {
+        if ((_this.time - _this.lastHit) / 1000 >= 0.2) {
+          player.updateHealth(zombie.damage);
+          _this.lastHit = new Date().getTime();
+        }
+      }
+    }; //checks for bullet and zombies collision
+
 
     _this.checkBulletHit = function (enemy, bullet) {
       if (!enemy || !bullet) return;
@@ -945,7 +1002,6 @@ function (_super) {
         if (enemy.getHealth() <= 0) _this.enemies = _this.enemies.filter(function (zombie) {
           return zombie.getId() !== enemy.getId();
         });
-        enemy.healthBar.updateHealth(enemy.getHealth());
         _this.bullets = _this.bullets.filter(function (bull) {
           return bull.id !== bullet.id;
         });
@@ -953,11 +1009,16 @@ function (_super) {
     };
 
     _this.render = function () {
-      _this.character.render();
+      //update time
+      _this.time = new Date().getTime();
+
+      _this.character.render(); //render bullets
+
 
       for (var i = 0; i < _this.bullets.length; i++) {
         _this.bullets[i].render();
-      }
+      } //render zombies
+
 
       for (var i = 0; i < _this.enemies.length; i++) {
         if (_this.enemies[i]) _this.enemies[i].render();
@@ -969,7 +1030,6 @@ function (_super) {
     };
 
     _this.update = function () {
-      console.log(_this.bullets);
       var _a = GameContext_1.default.context.canvas,
           width = _a.width,
           height = _a.height;
@@ -978,12 +1038,18 @@ function (_super) {
 
       if (_this.character.anyBullets()) {
         _this.bullets.push(_this.character.nextBullet());
-      }
+      } //update zombies path if player moves
+
 
       for (var i = 0; i < _this.enemies.length; i++) {
         _this.enemies[i].follow(_this.character);
 
         _this.enemies[i].update();
+      } //check zombie damage
+
+
+      for (var i = 0; i < _this.enemies.length; i++) {
+        _this.checkZombieBite(_this.enemies[i], _this.character);
       } //check bullet collision
 
 
@@ -1003,7 +1069,8 @@ function (_super) {
             return x.id !== _this.bullets[i].id;
           });
         } else _this.bullets[i].update();
-      };
+      }; //if bullets move outside canvas, delete them
+
 
       for (var i = 0; i < _this.bullets.length; i++) {
         _loop_1(i);
@@ -1181,7 +1248,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50457" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51550" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

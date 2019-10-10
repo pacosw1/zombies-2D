@@ -7,7 +7,7 @@ class Zombie {
   private target = { x: 0, y: 0 };
   private speed = 1;
   private angle = { x: 0, y: 0 };
-  private damage = 5;
+  public damage = 5;
   private id;
   private radius = 20;
   private health = 100;
@@ -44,9 +44,11 @@ class Zombie {
   }
 
   update() {
-    console.log(this.healthBar);
+    //update health bar
     this.healthBar.update();
+    this.healthBar.updateHealth(this.health);
 
+    //update path to find player
     let deltaX = this.target.x - this.position.x;
     let deltaY = this.target.y - this.position.y;
     let angle = Math.atan2(deltaY, deltaX);
@@ -66,8 +68,9 @@ class Zombie {
 
     context.fillStyle = "green";
     context.arc(x, y, this.radius, 0, 2 * Math.PI);
-    // context.moveTo(xPos, yPos);
-    // context.lineTo(this.aim.x, this.aim.y);
+    // context.moveTo(x, y);
+    // context.lineTo(this.target.x, this.target.y);
+    context.stroke();
     context.fill();
     context.strokeStyle = "lime";
     context.closePath();

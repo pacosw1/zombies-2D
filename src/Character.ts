@@ -44,6 +44,7 @@ class Character {
     this.healthBar = new HP(this.position, this.health, this.radius);
   }
 
+  //updates current mouse coordinates on screen
   public mouseMoveHandler = event => {
     this.aim.x = event.offsetX;
     this.aim.y = event.offsetY;
@@ -84,15 +85,19 @@ class Character {
     }
   };
 
+  //pops next bullet to be fired from local array
   public nextBullet = () => {
     return this.bullets.pop();
   };
 
+  //checks if any bullets in array
   public anyBullets = () => {
     return this.bullets.length > 0;
   };
 
+  //
   public fire = () => {
+    //waits n seconds before firing a bullet (based on fire rate)
     if ((this.time - this.lastFired) / 1000 >= 1 / this.fireRate) {
       this.bullets.push(
         new Bullet(
@@ -106,7 +111,7 @@ class Character {
           10
         )
       );
-      this.lastFired = new Date().getTime();
+      this.lastFired = new Date().getTime(); //update last time a shot was fired
     }
   };
 
@@ -114,15 +119,10 @@ class Character {
     this.position.x += this.direction.x * this.speed;
     this.position.y += this.direction.y * this.speed;
   };
-  // public jumpLogic = (width, height, yPos) => {
-  //   if (yPos < height - 50 && !this.jumping) {
-  //     this.position[1] += this.gravity;
-  //   } else if (this.jumping) {
-  //     this.position[1] -= this.gravity;
-  //     if (this.position[1] <= height - 150) this.jumping = false;
-  //   }
-  // };
+
   public update = () => {
+    //updates the health bar
+    this.healthBar.updateHealth(this.health);
     this.healthBar.update();
     this.time = new Date().getTime();
     const { context } = GameContext;
@@ -130,14 +130,23 @@ class Character {
     const { width, height } = context.canvas;
     let { x, y } = this.position;
     if (this.firing) {
+      //add bullets to array while firing = true
       this.fire();
     }
     // this.jumpLogic(width, height, yPos);
     this.moveLogic(x);
   };
 
+  public updateHealth = damage => {
+    this.health -= damage;
+  };
+
   public getPosition = () => {
-    return this.position;
+    return {
+      x: this.position.x,
+      y: this.position.y,
+      radius: this.radius
+    };
   };
 
   public render = () => {
@@ -151,12 +160,11 @@ class Character {
     context.save();
     context.beginPath();
 
-    this.healthBar.render();
+    this.healthBar.render(); //render health bar
 
     context.fillStyle = "red";
-    context.arc(x, y, 20, 0, 2 * Math.PI);
-    // context.moveTo(xPos, yPos);
-    // context.lineTo(this.aim.x, this.aim.y);
+    context.arc(x, y, this.radius, 0, 2 * Math.PI);
+
     context.fill();
     context.closePath();
     context.restore();
@@ -164,3 +172,12 @@ class Character {
 }
 
 export default Character;
+
+// public jumpLogic = (width, height, yPos) => {
+//   if (yPos < height - 50 && !this.jumping) {
+//     this.position[1] += this.gravity;
+//   } else if (this.jumping) {
+//     this.position[1] -= this.gravity;
+//     if (this.position[1] <= height - 150) this.jumping = false;
+//   }
+// };
