@@ -29,6 +29,7 @@ class PlayingScene extends Scene {
         this.enemies = this.enemies.filter(
           zombie => zombie.getId() !== enemy.getId()
         );
+      enemy.healthBar.updateHealth(enemy.getHealth());
       this.bullets = this.bullets.filter(bull => bull.id !== bullet.id);
     }
   };
