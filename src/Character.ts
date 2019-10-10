@@ -2,6 +2,7 @@ import GameContext from "./GameContext";
 import Time from "./Time";
 import Bullet from "./Bullet";
 import spritesheet from "/assets/spritesheet.png";
+import HP from "./HP";
 
 type coords = [number, number];
 export enum CharacterDirection {
@@ -13,6 +14,8 @@ export enum CharacterDirection {
 class Character {
   private gravity = 9.8;
   private lastFired = 0;
+  private health = 100;
+  private healthBar: HP = null;
   private fireRate = 10;
   private time;
   private aim = { x: 0, y: 0 };
@@ -22,6 +25,7 @@ class Character {
   private characterHeight: number = 50;
   private frameCounter = 0;
   private currentFrame = 0;
+  private radius = 20;
   private speed = 5;
   private firing = false;
   private bullets: Bullet[] = [];
@@ -37,6 +41,7 @@ class Character {
       x: (width - this.characterWidth) / 2,
       y: height * 0.75 - this.characterHeight
     };
+    this.healthBar = new HP(this.position, this.health, this.radius);
   }
 
   public mouseMoveHandler = event => {
@@ -118,6 +123,7 @@ class Character {
   //   }
   // };
   public update = () => {
+    this.healthBar.update();
     this.time = new Date().getTime();
     const { context } = GameContext;
 
@@ -145,11 +151,13 @@ class Character {
     context.save();
     context.beginPath();
 
-    context.fillStyle = "lime";
+    this.healthBar.render();
+
+    context.fillStyle = "red";
     context.arc(x, y, 20, 0, 2 * Math.PI);
     // context.moveTo(xPos, yPos);
     // context.lineTo(this.aim.x, this.aim.y);
-    context.stroke();
+    context.fill();
     context.closePath();
     context.restore();
   };

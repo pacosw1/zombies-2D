@@ -301,7 +301,79 @@ function () {
 exports.default = Bullet;
 },{"./GameContext":"src/GameContext.ts"}],"assets/spritesheet.png":[function(require,module,exports) {
 module.exports = "/spritesheet.713aba4a.png";
-},{}],"src/Character.ts":[function(require,module,exports) {
+},{}],"src/HP.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var HP =
+/** @class */
+function () {
+  function HP(position, health, playerWidth) {
+    var _this = this;
+
+    this.health = 100;
+    this.width = 0.5;
+    this.height = 5;
+    this.playerWidth = 0;
+    this.color = "lime";
+    this.position = {
+      x: 0,
+      y: 0
+    };
+
+    this.updateHealth = function (health) {
+      _this.health = health;
+    };
+
+    this.updatePosition = function (position) {
+      _this.position = position;
+    };
+
+    this.position = position;
+    this.playerWidth = playerWidth;
+    this.health = health;
+  }
+
+  HP.prototype.render = function () {
+    var context = GameContext_1.default.context;
+    var _a = this.position,
+        x = _a.x,
+        y = _a.y;
+    context.save();
+    context.beginPath();
+    context.fillStyle = this.color;
+    var start = x - this.playerWidth - 5;
+
+    for (var i = 0; i <= this.health; i++) {
+      context.fillRect(start, y - this.playerWidth * 1.5, this.width, this.height);
+      start += this.width;
+    }
+
+    context.stroke();
+    context.closePath();
+    context.restore();
+  };
+
+  HP.prototype.update = function () {
+    if (this.health < 80 && this.health >= 50) this.color = "#fccf03";else if (this.health < 50 && this.health >= 30) this.color = "orange";else if (this.health < 30) this.color = "red";
+  };
+
+  return HP;
+}();
+
+exports.default = HP;
+},{"./GameContext":"src/GameContext.ts"}],"src/Character.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -320,6 +392,8 @@ var Bullet_1 = __importDefault(require("./Bullet"));
 
 var spritesheet_png_1 = __importDefault(require("/assets/spritesheet.png"));
 
+var HP_1 = __importDefault(require("./HP"));
+
 var CharacterDirection;
 
 (function (CharacterDirection) {
@@ -336,6 +410,8 @@ function () {
 
     this.gravity = 9.8;
     this.lastFired = 0;
+    this.health = 100;
+    this.healthBar = null;
     this.fireRate = 10;
     this.aim = {
       x: 0,
@@ -353,6 +429,7 @@ function () {
     this.characterHeight = 50;
     this.frameCounter = 0;
     this.currentFrame = 0;
+    this.radius = 20;
     this.speed = 5;
     this.firing = false;
     this.bullets = [];
@@ -435,6 +512,8 @@ function () {
 
 
     this.update = function () {
+      _this.healthBar.update();
+
       _this.time = new Date().getTime();
       var context = GameContext_1.default.context;
       var _a = context.canvas,
@@ -467,11 +546,14 @@ function () {
       var spriteWidth = 52;
       context.save();
       context.beginPath();
-      context.fillStyle = "lime";
+
+      _this.healthBar.render();
+
+      context.fillStyle = "red";
       context.arc(x, y, 20, 0, 2 * Math.PI); // context.moveTo(xPos, yPos);
       // context.lineTo(this.aim.x, this.aim.y);
 
-      context.stroke();
+      context.fill();
       context.closePath();
       context.restore();
     };
@@ -486,13 +568,14 @@ function () {
       x: (width - this.characterWidth) / 2,
       y: height * 0.75 - this.characterHeight
     };
+    this.healthBar = new HP_1.default(this.position, this.health, this.radius);
   }
 
   return Character;
 }();
 
 exports.default = Character;
-},{"./GameContext":"src/GameContext.ts","./Bullet":"src/Bullet.ts","/assets/spritesheet.png":"assets/spritesheet.png"}],"src/Hp.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Bullet":"src/Bullet.ts","/assets/spritesheet.png":"assets/spritesheet.png","./HP":"src/HP.ts"}],"src/Hp.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -510,12 +593,13 @@ var GameContext_1 = __importDefault(require("./GameContext"));
 var HP =
 /** @class */
 function () {
-  function HP(position, health) {
+  function HP(position, health, playerWidth) {
     var _this = this;
 
     this.health = 100;
-    this.width = 3;
-    this.height = 10;
+    this.width = 0.5;
+    this.height = 5;
+    this.playerWidth = 0;
     this.color = "lime";
     this.position = {
       x: 0,
@@ -531,6 +615,7 @@ function () {
     };
 
     this.position = position;
+    this.playerWidth = playerWidth;
     this.health = health;
   }
 
@@ -542,10 +627,10 @@ function () {
     context.save();
     context.beginPath();
     context.fillStyle = this.color;
-    var start = x;
+    var start = x - this.playerWidth - 5;
 
     for (var i = 0; i <= this.health; i++) {
-      context.fillRect(x, y, this.width, this.height);
+      context.fillRect(start, y - this.playerWidth * 1.5, this.width, this.height);
       start += this.width;
     }
 
@@ -555,7 +640,7 @@ function () {
   };
 
   HP.prototype.update = function () {
-    if (this.health < 80) this.color = "yellow";else if (this.health < 50) this.color = "orange";else if (this.health < 20) this.color = "red";
+    if (this.health < 80 && this.health >= 50) this.color = "#fccf03";else if (this.health < 50 && this.health >= 30) this.color = "orange";else if (this.health < 30) this.color = "red";
   };
 
   return HP;
@@ -636,7 +721,7 @@ function () {
   };
 
   Zombie.prototype.init = function () {
-    this.healthBar = new Hp_1.default(this.position, 100);
+    this.healthBar = new Hp_1.default(this.position, 100, this.radius);
   };
 
   Zombie.prototype.update = function () {
@@ -659,11 +744,11 @@ function () {
     this.healthBar.render();
     context.save();
     context.beginPath();
-    context.fillStyle = "lime";
+    context.fillStyle = "green";
     context.arc(x, y, this.radius, 0, 2 * Math.PI); // context.moveTo(xPos, yPos);
     // context.lineTo(this.aim.x, this.aim.y);
 
-    context.stroke();
+    context.fill();
     context.strokeStyle = "lime";
     context.closePath();
     context.restore();
@@ -1096,7 +1181,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49463" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50457" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -40,7 +40,7 @@ class Zombie {
   }
 
   init() {
-    this.healthBar = new HP(this.position, 100);
+    this.healthBar = new HP(this.position, 100, this.radius);
   }
 
   update() {
@@ -64,11 +64,11 @@ class Zombie {
     context.save();
     context.beginPath();
 
-    context.fillStyle = "lime";
+    context.fillStyle = "green";
     context.arc(x, y, this.radius, 0, 2 * Math.PI);
     // context.moveTo(xPos, yPos);
     // context.lineTo(this.aim.x, this.aim.y);
-    context.stroke();
+    context.fill();
     context.strokeStyle = "lime";
     context.closePath();
     context.restore();
