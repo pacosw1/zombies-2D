@@ -2,10 +2,11 @@ import Scene from "./Scene";
 import GameContext from "./GameContext";
 import Engine from "./Engine";
 import PlayingScene from "./PlayingScene";
+import MainMenuScene from "./MainMenuScene";
 
-class MainMenuScene extends Scene {
+class GameOverScene extends Scene {
   private currentOption: number = 0;
-  private options = ["jugar", "config", "salir"];
+  private options = ["play again", "main menu", "quit"];
   public render = () => {
     let { options } = this;
     var context = GameContext.context;
@@ -18,6 +19,9 @@ class MainMenuScene extends Scene {
     context.fillStyle = "lime";
     context.font = "25px arial";
     context.strokeStyle = "blue";
+
+    context.strokeText("GAME OVER", width / 2, 100);
+    context.fillText("GAME OVER", width / 2, 100);
 
     for (let i = 0; i < options.length; i++) {
       if (i == this.currentOption)
@@ -45,9 +49,11 @@ class MainMenuScene extends Scene {
       case "Enter":
         if (this.currentOption === 0)
           engine.setCurrentScene(new PlayingScene(this.engine));
+        if (this.currentOption == 1)
+          engine.setCurrentScene(new MainMenuScene(this.engine));
           break;
     }
   };
 }
 
-export default MainMenuScene;
+export default GameOverScene;

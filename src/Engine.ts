@@ -3,6 +3,7 @@ import Time from "./Time";
 import Scene from "./Scene";
 import PlayingScene from "./PlayingScene";
 import MainMenuScene from "./MainMenuScene";
+import GameOverScene from "./GameOverScene";
 
 class Engine {
   private currentScene: Scene = null;
@@ -46,7 +47,7 @@ class Engine {
     this.currentScene.enter();
   };
   public init = () => {
-    this.currentScene = new PlayingScene();
+    this.currentScene = new GameOverScene(this);
     this.currentScene.enter();
   };
 

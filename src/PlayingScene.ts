@@ -7,6 +7,8 @@ import Zombie from "./Zombie";
 import MainMenuScene from "./MainMenuScene";
 import GameContext from "./GameContext";
 import Damage from "./Damage";
+import GameOverScene from "./GameOverScene";
+
 class PlayingScene extends Scene {
   private character: Character = null;
   private bullets: Bullet[] = [];
@@ -148,6 +150,11 @@ class PlayingScene extends Scene {
         this.bullets = this.bullets.filter(x => x.id !== this.bullets[i].id);
       } else this.bullets[i].update();
     }
+
+    // checks if character is dead
+    if(this.character.isDead())
+      this.engine.setCurrentScene(new GameOverScene(this.engine));
+
   };
 
   public enter = () => {
@@ -163,7 +170,7 @@ class PlayingScene extends Scene {
   };
   public keyDownHandler = (event: KeyboardEvent, engine: Engine) => {
     const { key } = event;
-    if (key == "Escape") engine.setCurrentScene(new MainMenuScene());
+    if (key == "Escape") engine.setCurrentScene(new MainMenuScene(this.engine));
     this.character.keydownHandler(key);
   };
 }

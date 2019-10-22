@@ -120,9 +120,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"src/GameContext.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext =
 /** @class */
@@ -134,13 +132,11 @@ function () {
   return GameContext;
 }();
 
-exports.default = GameContext;
+exports["default"] = GameContext;
 },{}],"src/Time.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Time =
 /** @class */
@@ -160,18 +156,16 @@ function () {
   return Time;
 }();
 
-exports.default = Time;
+exports["default"] = Time;
 },{}],"src/Scene.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene =
 /** @class */
 function () {
-  function Scene() {
+  function Scene(engine) {
     this.render = function () {};
 
     this.update = function () {};
@@ -183,12 +177,14 @@ function () {
     this.keyDownHandler = function (event, engine) {};
 
     this.mouseMoveHandler = function (event) {};
+
+    this.engine = engine;
   }
 
   return Scene;
 }();
 
-exports.default = Scene;
+exports["default"] = Scene;
 },{}],"src/Bullet.ts":[function(require,module,exports) {
 "use strict";
 
@@ -198,9 +194,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -240,7 +234,7 @@ function () {
     };
 
     this.render = function () {
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = _this.position,
           x = _a.x,
           y = _a.y;
@@ -282,7 +276,7 @@ function () {
   return Bullet;
 }();
 
-exports.default = Bullet;
+exports["default"] = Bullet;
 },{"./GameContext":"src/GameContext.ts"}],"assets/FinnSprite.png":[function(require,module,exports) {
 module.exports = "/FinnSprite.7fd90bfc.png";
 },{}],"src/HP.ts":[function(require,module,exports) {
@@ -294,9 +288,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -330,7 +322,7 @@ function () {
   }
 
   HP.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -356,7 +348,7 @@ function () {
   return HP;
 }();
 
-exports.default = HP;
+exports["default"] = HP;
 },{"./GameContext":"src/GameContext.ts"}],"src/Character.ts":[function(require,module,exports) {
 "use strict";
 
@@ -366,9 +358,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -467,6 +457,11 @@ function () {
         _this.moving = false;
         _this.direction.y = 0;
       }
+    }; // returns characters health
+
+
+    this.isDead = function () {
+      if (_this.health <= 0) return true;else return false;
     }; //pops next bullet to be fired from local array
 
 
@@ -483,7 +478,7 @@ function () {
     this.fire = function () {
       //waits n seconds before firing a bullet (based on fire rate)
       if ((_this.time - _this.lastFired) / 1000 >= 1 / _this.fireRate) {
-        _this.bullets.push(new Bullet_1.default(Date.now() + _this.aim.y, {
+        _this.bullets.push(new Bullet_1["default"](Date.now() + _this.aim.y, {
           x: _this.position.x,
           y: _this.position.y
         }, {
@@ -507,7 +502,7 @@ function () {
       _this.healthBar.update();
 
       _this.time = new Date().getTime();
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -545,7 +540,7 @@ function () {
     };
 
     this.render = function () {
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = _this.position,
           x = _a.x,
           y = _a.y;
@@ -554,11 +549,6 @@ function () {
       var spriteHeight = 35;
       var spriteWidth = 20;
       context.save();
-
-      if (_this.lastDirection === -1) {
-        context.scale(-1, 1);
-      }
-
       context.beginPath();
 
       _this.healthBar.render(); //render health bar
@@ -572,23 +562,23 @@ function () {
       context.restore();
     };
 
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = context.canvas,
         width = _a.width,
         height = _a.height;
-    this.characterImage.src = FinnSprite_png_1.default;
+    this.characterImage.src = FinnSprite_png_1["default"];
     this.time = new Date().getTime();
     this.position = {
       x: (width - this.characterWidth) / 2,
       y: height * 0.75 - this.characterHeight
     };
-    this.healthBar = new HP_1.default(this.position, this.health, this.radius);
+    this.healthBar = new HP_1["default"](this.position, this.health, this.radius);
   }
 
   return Character;
 }();
 
-exports.default = Character; // public jumpLogic = (width, height, yPos) => {
+exports["default"] = Character; // public jumpLogic = (width, height, yPos) => {
 //   if (yPos < height - 50 && !this.jumping) {
 //     this.position[1] += this.gravity;
 //   } else if (this.jumping) {
@@ -605,9 +595,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -641,7 +629,7 @@ function () {
   }
 
   HP.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -667,7 +655,7 @@ function () {
   return HP;
 }();
 
-exports.default = HP;
+exports["default"] = HP;
 },{"./GameContext":"src/GameContext.ts"}],"assets/ZombieToast.png":[function(require,module,exports) {
 module.exports = "/ZombieToast.2adeb02e.png";
 },{}],"src/Zombie.ts":[function(require,module,exports) {
@@ -679,9 +667,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -740,7 +726,7 @@ function () {
 
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
-    this.characterImage.src = ZombieToast_png_1.default;
+    this.characterImage.src = ZombieToast_png_1["default"];
     this.damage = damage;
     this.radius = radius;
     this.init();
@@ -752,7 +738,7 @@ function () {
   };
 
   Zombie.prototype.init = function () {
-    this.healthBar = new Hp_1.default(this.position, 100, this.radius);
+    this.healthBar = new Hp_1["default"](this.position, 100, this.radius);
   };
 
   Zombie.prototype.update = function () {
@@ -771,7 +757,7 @@ function () {
   };
 
   Zombie.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -796,7 +782,7 @@ function () {
   return Zombie;
 }();
 
-exports.default = Zombie;
+exports["default"] = Zombie;
 },{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -832,9 +818,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -855,7 +839,7 @@ function (_super) {
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -891,9 +875,11 @@ function (_super) {
 
         case "ArrowDown":
           _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+          break;
 
         case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default());
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
+          break;
       }
     };
 
@@ -901,9 +887,9 @@ function (_super) {
   }
 
   return MainMenuScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = MainMenuScene;
+exports["default"] = MainMenuScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Damage.ts":[function(require,module,exports) {
 "use strict";
 
@@ -913,9 +899,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -934,7 +918,7 @@ function () {
   }
 
   Damage.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -954,7 +938,7 @@ function () {
   return Damage;
 }();
 
-exports.default = Damage;
+exports["default"] = Damage;
 },{"./GameContext":"src/GameContext.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -990,9 +974,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1005,6 +987,8 @@ var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
 var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Damage_1 = __importDefault(require("./Damage"));
+
+var GameOverScene_1 = __importDefault(require("./GameOverScene"));
 
 var PlayingScene =
 /** @class */
@@ -1048,25 +1032,25 @@ function (_super) {
     _this.lastHit = 0;
     _this.hitmarks = [];
     _this.enemies = [//zombie array
-    new Zombie_1.default({
+    new Zombie_1["default"]({
       x: 0,
       y: 0
-    }, 5, 20), new Zombie_1.default({
+    }, 5, 20), new Zombie_1["default"]({
       x: 500,
       y: 0
-    }, 5, 20), new Zombie_1.default({
+    }, 5, 20), new Zombie_1["default"]({
       x: 250,
       y: 0
-    }, 5, 20), new Zombie_1.default({
+    }, 5, 20), new Zombie_1["default"]({
       x: 700,
       y: -10
-    }, 5, 20), new Zombie_1.default({
+    }, 5, 20), new Zombie_1["default"]({
       x: 100,
       y: 600
     }, 5, 20)];
 
     _this.randomizeSpawn = function () {
-      var _a = GameContext_1.default.context.canvas,
+      var _a = GameContext_1["default"].context.canvas,
           width = _a.width,
           height = _a.height;
     }; //checks for zombie and player collision
@@ -1101,7 +1085,7 @@ function (_super) {
         if (enemy.getHealth() <= 0) _this.enemies = _this.enemies.filter(function (zombie) {
           return zombie.getId() !== enemy.getId();
         });
-        var dmg = new Damage_1.default(bullet.getDamage(), 1, 20, bullet.getPosition());
+        var dmg = new Damage_1["default"](bullet.getDamage(), 1, 20, bullet.getPosition());
         _this.bullets = _this.bullets.filter(function (bull) {
           return bull.id !== bullet.id;
         });
@@ -1130,7 +1114,7 @@ function (_super) {
     };
 
     _this.update = function () {
-      var _a = GameContext_1.default.context.canvas,
+      var _a = GameContext_1["default"].context.canvas,
           width = _a.width,
           height = _a.height;
 
@@ -1174,11 +1158,14 @@ function (_super) {
 
       for (var i = 0; i < _this.bullets.length; i++) {
         _loop_1(i);
-      }
+      } // checks if character is dead
+
+
+      if (_this.character.isDead()) _this.engine.setCurrentScene(new GameOverScene_1["default"](_this.engine));
     };
 
     _this.enter = function () {
-      _this.character = new Character_1.default();
+      _this.character = new Character_1["default"]();
     };
 
     _this.keyUpHandler = function (event) {
@@ -1193,7 +1180,7 @@ function (_super) {
 
     _this.keyDownHandler = function (event, engine) {
       var key = event.key;
-      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1.default());
+      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
 
       _this.character.keydownHandler(key);
     };
@@ -1202,10 +1189,122 @@ function (_super) {
   }
 
   return PlayingScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts"}],"src/Engine.ts":[function(require,module,exports) {
+exports["default"] = PlayingScene;
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts"}],"src/GameOverScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+exports.__esModule = true;
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
+var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
+
+var GameOverScene =
+/** @class */
+function (_super) {
+  __extends(GameOverScene, _super);
+
+  function GameOverScene() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.currentOption = 0;
+    _this.options = ["play again", "main menu", "quit"];
+
+    _this.render = function () {
+      var options = _this.options;
+      var context = GameContext_1["default"].context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      context.save();
+      context.beginPath();
+      context.textAlign = "center";
+      context.fillStyle = "lime";
+      context.font = "25px arial";
+      context.strokeStyle = "blue";
+      context.strokeText("GAME OVER", width / 2, 100);
+      context.fillText("GAME OVER", width / 2, 100);
+
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
+        context.fillText(options[i], width / 2, height / 2 + i * 35);
+      }
+
+      context.closePath();
+      context.restore();
+    };
+
+    _this.update = function () {};
+
+    _this.enter = function () {};
+
+    _this.keyUpHandler = function (event) {};
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+          break;
+
+        case "Enter":
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
+          if (_this.currentOption == 1) engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
+          break;
+      }
+    };
+
+    return _this;
+  }
+
+  return GameOverScene;
+}(Scene_1["default"]);
+
+exports["default"] = GameOverScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./MainMenuScene":"src/MainMenuScene.ts"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1214,15 +1313,13 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Time_1 = __importDefault(require("./Time"));
 
-var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+var GameOverScene_1 = __importDefault(require("./GameOverScene"));
 
 var Engine =
 /** @class */
@@ -1252,7 +1349,7 @@ function () {
 
 
     this.clearScreen = function () {
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var canvas = context.canvas;
       var width = canvas.width;
       var height = canvas.height;
@@ -1271,7 +1368,7 @@ function () {
     };
 
     this.init = function () {
-      _this.currentScene = new PlayingScene_1.default();
+      _this.currentScene = new GameOverScene_1["default"](_this);
 
       _this.currentScene.enter();
     }; // Método que se ejecuta en cada frame del juego.
@@ -1280,7 +1377,7 @@ function () {
     this.tick = function () {
       _this.clearScreen();
 
-      Time_1.default.update();
+      Time_1["default"].update();
 
       _this.currentScene.update();
 
@@ -1293,8 +1390,8 @@ function () {
   return Engine;
 }();
 
-exports.default = Engine;
-},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/index.ts":[function(require,module,exports) {
+exports["default"] = Engine;
+},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./GameOverScene":"src/GameOverScene.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1303,9 +1400,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Engine_1 = __importDefault(require("./Engine"));
 
@@ -1314,8 +1409,8 @@ var GameContext_1 = __importDefault(require("./GameContext")); //  Nota: No es n
 
 var canvas = document.getElementById("game-area");
 var context = canvas.getContext("2d");
-GameContext_1.default.context = context;
-var engine = new Engine_1.default();
+GameContext_1["default"].context = context;
+var engine = new Engine_1["default"]();
 engine.start();
 canvas.addEventListener("keydown", engine.keydownHandler);
 canvas.addEventListener("keyup", engine.keyupHandler);
@@ -1348,7 +1443,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56185" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61019" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -1379,9 +1474,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
         assetsToAccept.forEach(function (v) {
           hmrAcceptRun(v[0], v[1]);
         });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
+      } else {
+        window.location.reload();
       }
     }
 
