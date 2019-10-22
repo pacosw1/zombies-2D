@@ -9,9 +9,6 @@ class Time {
     Time.deltaTime = (currentTime - Time.previousTime) / 1000;
     Time.previousTime = currentTime;
   }
-  public getTime = () => {
-    return Date.now() + "";
-  };
 }
 
 export default Time;

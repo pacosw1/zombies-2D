@@ -6,6 +6,7 @@ import Engine from "./Engine";
 import Zombie from "./Zombie";
 import MainMenuScene from "./MainMenuScene";
 import GameContext from "./GameContext";
+import Damage from "./Damage";
 class PlayingScene extends Scene {
   private character: Character = null;
   private bullets: Bullet[] = [];
@@ -40,10 +41,14 @@ class PlayingScene extends Scene {
    */
 
   private lastHit = 0;
+  private hitmarks: Damage[] = [];
   private enemies: Zombie[] = [
     //zombie array
     new Zombie({ x: 0, y: 0 }, 5, 20),
-    new Zombie({ x: 500, y: 0 }, 5, 20)
+    new Zombie({ x: 500, y: 0 }, 5, 20),
+    new Zombie({ x: 250, y: 0 }, 5, 20),
+    new Zombie({ x: 700, y: -10 }, 5, 20),
+    new Zombie({ x: 100, y: 600 }, 5, 20)
   ];
 
   public randomizeSpawn = () => {
@@ -75,12 +80,14 @@ class PlayingScene extends Scene {
     let dy = bulletPos.y - enemyPos.y;
     let distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance <= bulletPos.radius + enemyPos.radius + 5) {
+    if (distance <= bulletPos.radius + enemyPos.radius + 10) {
       enemy.updateHealth(bullet.getDamage());
       if (enemy.getHealth() <= 0)
         this.enemies = this.enemies.filter(
           zombie => zombie.getId() !== enemy.getId()
         );
+      let dmg = new Damage(bullet.getDamage(), 1, 20, bullet.getPosition());
+
       this.bullets = this.bullets.filter(bull => bull.id !== bullet.id);
     }
   };
@@ -88,6 +95,7 @@ class PlayingScene extends Scene {
   public render = () => {
     //update time
     this.time = new Date().getTime();
+
     this.character.render();
 
     //render bullets

@@ -1,7 +1,7 @@
 import GameContext from "./GameContext";
 import Time from "./Time";
 import Bullet from "./Bullet";
-import spritesheet from "/assets/spritesheet.png";
+import spritesheet from "/assets/FinnSprite.png";
 import HP from "./HP";
 
 type coords = [number, number];
@@ -13,20 +13,24 @@ export enum CharacterDirection {
 
 class Character {
   private gravity = 9.8;
+
   private lastFired = 0;
   private health = 100;
+  private start = 0;
+  private lastDirection = -1;
+  private moving = false;
   private healthBar: HP = null;
   private fireRate = 10;
   private time;
   private aim = { x: 0, y: 0 };
   private position = { x: 0, y: 0 };
   private direction = { x: 0, y: 0 };
-  private characterWidth: number = 50;
-  private characterHeight: number = 50;
-  private frameCounter = 0;
-  private currentFrame = 0;
+  private characterWidth: number = 70;
+  private characterHeight: number = 100;
+  private frameCounter = 10;
+  private currentFrame = 10;
   private radius = 20;
-  private speed = 5;
+  private speed = 3.5;
   private firing = false;
   private bullets: Bullet[] = [];
   private characterImage: HTMLImageElement = new Image();
@@ -53,15 +57,19 @@ class Character {
     switch (key) {
       case "d":
         this.direction.x = 1;
+        this.moving = true;
         break;
       case "a":
         this.direction.x = -1;
+        this.moving = true;
         break;
       case "w":
         this.direction.y = -1;
+        this.moving = true;
         break;
       case "s":
         this.direction.y = 1;
+        this.moving = true;
         break;
       case "f":
         this.firing = true;
@@ -74,6 +82,7 @@ class Character {
       (key === "d" && this.direction.x === 1) ||
       (key === "a" && this.direction.x === -1)
     ) {
+      this.moving = false;
       this.direction.x = 0;
     }
     if (key === "f") this.firing = false;
@@ -81,6 +90,7 @@ class Character {
       (key === "w" && this.direction.y === -1) ||
       (key === "s" && this.direction.y === 1)
     ) {
+      this.moving = false;
       this.direction.y = 0;
     }
   };
@@ -116,7 +126,8 @@ class Character {
   };
 
   public moveLogic = xPos => {
-    this.position.x += this.direction.x * this.speed;
+    this.position.x = this.position.x + this.speed * this.direction.x;
+
     this.position.y += this.direction.y * this.speed;
   };
 
@@ -135,6 +146,16 @@ class Character {
     }
     // this.jumpLogic(width, height, yPos);
     this.moveLogic(x);
+
+    if (this.moving) {
+      if (this.frameCounter % 8 === 0)
+        this.currentFrame = ((this.currentFrame + 1) % 7) + 8;
+    } else {
+      if (this.frameCounter % 15 === 0)
+        this.currentFrame = (this.currentFrame + 1) % 9;
+    }
+
+    this.frameCounter += 1;
   };
 
   public updateHealth = damage => {
@@ -152,18 +173,33 @@ class Character {
   public render = () => {
     const { context } = GameContext;
     let { x, y } = this.position;
-    const paddingY = 4;
-    const paddingX = 56.8;
-    const spriteHeight = 85;
-    const spriteWidth = 52;
+    const paddingY = 2;
+    const paddingX = 12;
+    const spriteHeight = 35;
+    const spriteWidth = 20;
 
     context.save();
+    if (this.lastDirection === -1) {
+      context.scale(-1, 1);
+    }
+
     context.beginPath();
 
     this.healthBar.render(); //render health bar
+    context.drawImage(
+      this.characterImage,
+      this.currentFrame * (spriteWidth + paddingX),
+      paddingY,
+      spriteWidth,
+      spriteHeight,
+      x - 47.5,
+      y - 30,
+      this.characterWidth,
+      this.characterHeight
+    );
 
     context.fillStyle = "red";
-    context.arc(x, y, this.radius, 0, 2 * Math.PI);
+    // context.arc(x, y, this.radius, 0, 2 * Math.PI);
 
     context.fill();
     context.closePath();

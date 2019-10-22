@@ -9,7 +9,7 @@ class Bullet {
   private range;
   private angleX = 1;
   private angleY = 0;
-  private damage = 5;
+  private damage = 15;
 
   constructor(id, position, target, range, speed) {
     this.id = id;
@@ -34,8 +34,8 @@ class Bullet {
     this.angleX = Math.cos(angle);
     this.angleY = Math.sin(angle);
 
-    this.position.x = this.position.x + 20 * Math.cos(angle);
-    this.position.y = this.position.y + 20 * Math.sin(angle);
+    this.position.x = this.position.x + 50 * Math.cos(angle);
+    this.position.y = this.position.y + 50 * Math.sin(angle);
   };
 
   public render = () => {

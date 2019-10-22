@@ -1,6 +1,7 @@
 import GameContext from "./GameContext";
 import Character from "./Character";
 import HP from "./Hp";
+import spritesheet from "/assets/ZombieToast.png";
 
 class Zombie {
   private position = { x: 0, y: 0 };
@@ -11,11 +12,18 @@ class Zombie {
   private id;
   private radius = 20;
   private health = 100;
+  private currentFrame = 0;
+  private frameCounter = 10;
+  private characterWidth: number = 70;
+  private characterHeight: number = 100;
   public healthBar: HP = null;
+  private characterImage: HTMLImageElement = new Image();
 
   constructor(position, damage, radius) {
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
+    this.characterImage.src = spritesheet;
+
     this.damage = damage;
     this.radius = radius;
     this.init();
@@ -58,6 +66,9 @@ class Zombie {
 
     this.position.x += this.speed * this.angle.x;
     this.position.y += this.speed * this.angle.y;
+
+    if (this.frameCounter % 10 === 0)
+      this.currentFrame = (this.currentFrame + 1) % 8;
   }
   render() {
     const { context } = GameContext;
@@ -65,9 +76,24 @@ class Zombie {
     this.healthBar.render();
     context.save();
     context.beginPath();
+    const paddingY = 35;
+    const paddingX = 19;
+    const spriteHeight = 64;
+    const spriteWidth = 45;
 
+    context.drawImage(
+      this.characterImage,
+      this.currentFrame * (spriteWidth + paddingX),
+      paddingY,
+      spriteWidth,
+      spriteHeight,
+      x - 47.5,
+      y - 10,
+      this.characterWidth,
+      this.characterHeight
+    );
     context.fillStyle = "green";
-    context.arc(x, y, this.radius, 0, 2 * Math.PI);
+
     // context.moveTo(x, y);
     // context.lineTo(this.target.x, this.target.y);
     context.stroke();

@@ -145,11 +145,7 @@ Object.defineProperty(exports, "__esModule", {
 var Time =
 /** @class */
 function () {
-  function Time() {
-    this.getTime = function () {
-      return Date.now() + "";
-    };
-  }
+  function Time() {}
 
   Time.update = function () {
     var currentTime = Date.now();
@@ -226,7 +222,7 @@ function () {
     this.radius = 2;
     this.angleX = 1;
     this.angleY = 0;
-    this.damage = 5;
+    this.damage = 15;
 
     this.getDamage = function () {
       return _this.damage;
@@ -239,8 +235,8 @@ function () {
       var angle = Math.atan2(deltaY, deltaX);
       _this.angleX = Math.cos(angle);
       _this.angleY = Math.sin(angle);
-      _this.position.x = _this.position.x + 20 * Math.cos(angle);
-      _this.position.y = _this.position.y + 20 * Math.sin(angle);
+      _this.position.x = _this.position.x + 50 * Math.cos(angle);
+      _this.position.y = _this.position.y + 50 * Math.sin(angle);
     };
 
     this.render = function () {
@@ -287,8 +283,8 @@ function () {
 }();
 
 exports.default = Bullet;
-},{"./GameContext":"src/GameContext.ts"}],"assets/spritesheet.png":[function(require,module,exports) {
-module.exports = "/spritesheet.713aba4a.png";
+},{"./GameContext":"src/GameContext.ts"}],"assets/FinnSprite.png":[function(require,module,exports) {
+module.exports = "/FinnSprite.7fd90bfc.png";
 },{}],"src/HP.ts":[function(require,module,exports) {
 "use strict";
 
@@ -378,7 +374,7 @@ var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Bullet_1 = __importDefault(require("./Bullet"));
 
-var spritesheet_png_1 = __importDefault(require("/assets/spritesheet.png"));
+var FinnSprite_png_1 = __importDefault(require("/assets/FinnSprite.png"));
 
 var HP_1 = __importDefault(require("./HP"));
 
@@ -399,6 +395,9 @@ function () {
     this.gravity = 9.8;
     this.lastFired = 0;
     this.health = 100;
+    this.start = 0;
+    this.lastDirection = -1;
+    this.moving = false;
     this.healthBar = null;
     this.fireRate = 10;
     this.aim = {
@@ -413,12 +412,12 @@ function () {
       x: 0,
       y: 0
     };
-    this.characterWidth = 50;
-    this.characterHeight = 50;
-    this.frameCounter = 0;
-    this.currentFrame = 0;
+    this.characterWidth = 70;
+    this.characterHeight = 100;
+    this.frameCounter = 10;
+    this.currentFrame = 10;
     this.radius = 20;
-    this.speed = 5;
+    this.speed = 3.5;
     this.firing = false;
     this.bullets = [];
     this.characterImage = new Image(); //updates current mouse coordinates on screen
@@ -432,18 +431,22 @@ function () {
       switch (key) {
         case "d":
           _this.direction.x = 1;
+          _this.moving = true;
           break;
 
         case "a":
           _this.direction.x = -1;
+          _this.moving = true;
           break;
 
         case "w":
           _this.direction.y = -1;
+          _this.moving = true;
           break;
 
         case "s":
           _this.direction.y = 1;
+          _this.moving = true;
           break;
 
         case "f":
@@ -454,12 +457,14 @@ function () {
 
     this.keyupHandler = function (key) {
       if (key === "d" && _this.direction.x === 1 || key === "a" && _this.direction.x === -1) {
+        _this.moving = false;
         _this.direction.x = 0;
       }
 
       if (key === "f") _this.firing = false;
 
       if (key === "w" && _this.direction.y === -1 || key === "s" && _this.direction.y === 1) {
+        _this.moving = false;
         _this.direction.y = 0;
       }
     }; //pops next bullet to be fired from local array
@@ -491,7 +496,7 @@ function () {
     };
 
     this.moveLogic = function (xPos) {
-      _this.position.x += _this.direction.x * _this.speed;
+      _this.position.x = _this.position.x + _this.speed * _this.direction.x;
       _this.position.y += _this.direction.y * _this.speed;
     };
 
@@ -517,6 +522,14 @@ function () {
 
 
       _this.moveLogic(x);
+
+      if (_this.moving) {
+        if (_this.frameCounter % 8 === 0) _this.currentFrame = (_this.currentFrame + 1) % 7 + 8;
+      } else {
+        if (_this.frameCounter % 15 === 0) _this.currentFrame = (_this.currentFrame + 1) % 9;
+      }
+
+      _this.frameCounter += 1;
     };
 
     this.updateHealth = function (damage) {
@@ -536,18 +549,24 @@ function () {
       var _a = _this.position,
           x = _a.x,
           y = _a.y;
-      var paddingY = 4;
-      var paddingX = 56.8;
-      var spriteHeight = 85;
-      var spriteWidth = 52;
+      var paddingY = 2;
+      var paddingX = 12;
+      var spriteHeight = 35;
+      var spriteWidth = 20;
       context.save();
+
+      if (_this.lastDirection === -1) {
+        context.scale(-1, 1);
+      }
+
       context.beginPath();
 
       _this.healthBar.render(); //render health bar
 
 
-      context.fillStyle = "red";
-      context.arc(x, y, _this.radius, 0, 2 * Math.PI);
+      context.drawImage(_this.characterImage, _this.currentFrame * (spriteWidth + paddingX), paddingY, spriteWidth, spriteHeight, x - 47.5, y - 30, _this.characterWidth, _this.characterHeight);
+      context.fillStyle = "red"; // context.arc(x, y, this.radius, 0, 2 * Math.PI);
+
       context.fill();
       context.closePath();
       context.restore();
@@ -557,7 +576,7 @@ function () {
     var _a = context.canvas,
         width = _a.width,
         height = _a.height;
-    this.characterImage.src = spritesheet_png_1.default;
+    this.characterImage.src = FinnSprite_png_1.default;
     this.time = new Date().getTime();
     this.position = {
       x: (width - this.characterWidth) / 2,
@@ -577,7 +596,7 @@ exports.default = Character; // public jumpLogic = (width, height, yPos) => {
 //     if (this.position[1] <= height - 150) this.jumping = false;
 //   }
 // };
-},{"./GameContext":"src/GameContext.ts","./Bullet":"src/Bullet.ts","/assets/spritesheet.png":"assets/spritesheet.png","./HP":"src/HP.ts"}],"src/Hp.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Bullet":"src/Bullet.ts","/assets/FinnSprite.png":"assets/FinnSprite.png","./HP":"src/HP.ts"}],"src/Hp.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -649,7 +668,9 @@ function () {
 }();
 
 exports.default = HP;
-},{"./GameContext":"src/GameContext.ts"}],"src/Zombie.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts"}],"assets/ZombieToast.png":[function(require,module,exports) {
+module.exports = "/ZombieToast.2adeb02e.png";
+},{}],"src/Zombie.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -665,6 +686,8 @@ Object.defineProperty(exports, "__esModule", {
 var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Hp_1 = __importDefault(require("./Hp"));
+
+var ZombieToast_png_1 = __importDefault(require("/assets/ZombieToast.png"));
 
 var Zombie =
 /** @class */
@@ -688,7 +711,12 @@ function () {
     this.damage = 5;
     this.radius = 20;
     this.health = 100;
+    this.currentFrame = 0;
+    this.frameCounter = 10;
+    this.characterWidth = 70;
+    this.characterHeight = 100;
     this.healthBar = null;
+    this.characterImage = new Image();
 
     this.updateHealth = function (damage) {
       _this.health -= damage;
@@ -712,6 +740,7 @@ function () {
 
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
+    this.characterImage.src = ZombieToast_png_1.default;
     this.damage = damage;
     this.radius = radius;
     this.init();
@@ -738,6 +767,7 @@ function () {
     this.angle.y = Math.sin(angle);
     this.position.x += this.speed * this.angle.x;
     this.position.y += this.speed * this.angle.y;
+    if (this.frameCounter % 10 === 0) this.currentFrame = (this.currentFrame + 1) % 8;
   };
 
   Zombie.prototype.render = function () {
@@ -748,8 +778,12 @@ function () {
     this.healthBar.render();
     context.save();
     context.beginPath();
-    context.fillStyle = "green";
-    context.arc(x, y, this.radius, 0, 2 * Math.PI); // context.moveTo(x, y);
+    var paddingY = 35;
+    var paddingX = 19;
+    var spriteHeight = 64;
+    var spriteWidth = 45;
+    context.drawImage(this.characterImage, this.currentFrame * (spriteWidth + paddingX), paddingY, spriteWidth, spriteHeight, x - 47.5, y - 10, this.characterWidth, this.characterHeight);
+    context.fillStyle = "green"; // context.moveTo(x, y);
     // context.lineTo(this.target.x, this.target.y);
 
     context.stroke();
@@ -763,7 +797,7 @@ function () {
 }();
 
 exports.default = Zombie;
-},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts"}],"src/MainMenuScene.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -870,7 +904,58 @@ function (_super) {
 }(Scene_1.default);
 
 exports.default = MainMenuScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Damage.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var Damage =
+/** @class */
+function () {
+  function Damage(value, duration, size, position) {
+    this.position = {
+      x: 0,
+      y: 0
+    };
+    this.value = value;
+    this.duration = duration;
+    this.size = size;
+    this.position = position;
+  }
+
+  Damage.prototype.render = function () {
+    var context = GameContext_1.default.context;
+    var _a = this.position,
+        x = _a.x,
+        y = _a.y;
+    console.log(this.value);
+    context.save();
+    context.beginPath();
+    context.fillStyle = "black";
+    context.fillText(this.value + "", x, y, this.size);
+    context.font = "100px times new roman";
+    context.fill();
+    context.closePath();
+    context.restore();
+  };
+
+  Damage.prototype.update = function () {};
+
+  return Damage;
+}();
+
+exports.default = Damage;
+},{"./GameContext":"src/GameContext.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -919,6 +1004,8 @@ var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
+var Damage_1 = __importDefault(require("./Damage"));
+
 var PlayingScene =
 /** @class */
 function (_super) {
@@ -954,9 +1041,12 @@ function (_super) {
      * 7. Animations
      * 8. Obstacles
      * 9. Game Over Screen
+     * 10. sound effects, music
+     * 11. Pause Game
      */
 
     _this.lastHit = 0;
+    _this.hitmarks = [];
     _this.enemies = [//zombie array
     new Zombie_1.default({
       x: 0,
@@ -964,6 +1054,15 @@ function (_super) {
     }, 5, 20), new Zombie_1.default({
       x: 500,
       y: 0
+    }, 5, 20), new Zombie_1.default({
+      x: 250,
+      y: 0
+    }, 5, 20), new Zombie_1.default({
+      x: 700,
+      y: -10
+    }, 5, 20), new Zombie_1.default({
+      x: 100,
+      y: 600
     }, 5, 20)];
 
     _this.randomizeSpawn = function () {
@@ -997,11 +1096,12 @@ function (_super) {
       var dy = bulletPos.y - enemyPos.y;
       var distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance <= bulletPos.radius + enemyPos.radius + 5) {
+      if (distance <= bulletPos.radius + enemyPos.radius + 10) {
         enemy.updateHealth(bullet.getDamage());
         if (enemy.getHealth() <= 0) _this.enemies = _this.enemies.filter(function (zombie) {
           return zombie.getId() !== enemy.getId();
         });
+        var dmg = new Damage_1.default(bullet.getDamage(), 1, 20, bullet.getPosition());
         _this.bullets = _this.bullets.filter(function (bull) {
           return bull.id !== bullet.id;
         });
@@ -1105,7 +1205,7 @@ function (_super) {
 }(Scene_1.default);
 
 exports.default = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts"}],"src/Engine.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1248,7 +1348,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51550" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56185" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
