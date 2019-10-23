@@ -47,11 +47,7 @@ class Engine {
     this.currentScene.enter();
   };
   public init = () => {
-<<<<<<< HEAD
-    this.currentScene = new MainMenuScene();
-=======
     this.currentScene = new MainMenuScene(this);
->>>>>>> 8691fd4cec40d68b20e6cfae3b11016e04815695
     this.currentScene.enter();
   };
 
