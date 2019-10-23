@@ -256,7 +256,6 @@ function () {
     };
 
     this.update = function () {
-      console.log(_this.angleX);
       var _a = _this,
           position = _a.position,
           target = _a.target,
@@ -783,114 +782,7 @@ function () {
 }();
 
 exports["default"] = Zombie;
-},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
-"use strict";
-
-var __extends = this && this.__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (b.hasOwnProperty(p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-exports.__esModule = true;
-
-var Scene_1 = __importDefault(require("./Scene"));
-
-var GameContext_1 = __importDefault(require("./GameContext"));
-
-var PlayingScene_1 = __importDefault(require("./PlayingScene"));
-
-var MainMenuScene =
-/** @class */
-function (_super) {
-  __extends(MainMenuScene, _super);
-
-  function MainMenuScene() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
-
-    _this.currentOption = 0;
-    _this.options = ["jugar", "config", "salir"];
-
-    _this.render = function () {
-      var options = _this.options;
-      var context = GameContext_1["default"].context;
-      var _a = context.canvas,
-          width = _a.width,
-          height = _a.height;
-      context.save();
-      context.beginPath();
-      context.textAlign = "center";
-      context.fillStyle = "lime";
-      context.font = "25px arial";
-      context.strokeStyle = "blue";
-
-      for (var i = 0; i < options.length; i++) {
-        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
-        context.fillText(options[i], width / 2, height / 2 + i * 35);
-      }
-
-      context.closePath();
-      context.restore();
-    };
-
-    _this.update = function () {};
-
-    _this.enter = function () {};
-
-    _this.keyUpHandler = function (event) {};
-
-    _this.keyDownHandler = function (event, engine) {
-      var key = event.key;
-
-      switch (key) {
-        case "ArrowUp":
-          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
-          break;
-
-        case "ArrowDown":
-          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
-          break;
-
-        case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
-          break;
-      }
-    };
-
-    return _this;
-  }
-
-  return MainMenuScene;
-}(Scene_1["default"]);
-
-exports["default"] = MainMenuScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Damage.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/Damage.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -939,7 +831,119 @@ function () {
 }();
 
 exports["default"] = Damage;
-},{"./GameContext":"src/GameContext.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts"}],"src/GameOverScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+exports.__esModule = true;
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
+var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
+
+var GameOverScene =
+/** @class */
+function (_super) {
+  __extends(GameOverScene, _super);
+
+  function GameOverScene() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.currentOption = 0;
+    _this.options = ["play again", "main menu", "quit"];
+
+    _this.render = function () {
+      var options = _this.options;
+      var context = GameContext_1["default"].context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      context.save();
+      context.beginPath();
+      context.textAlign = "center";
+      context.fillStyle = "lime";
+      context.font = "25px arial";
+      context.strokeStyle = "blue";
+      context.strokeText("GAME OVER", width / 2, 100);
+      context.fillText("GAME OVER", width / 2, 100);
+
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
+        context.fillText(options[i], width / 2, height / 2 + i * 35);
+      }
+
+      context.closePath();
+      context.restore();
+    };
+
+    _this.update = function () {};
+
+    _this.enter = function () {};
+
+    _this.keyUpHandler = function (event) {};
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+          break;
+
+        case "Enter":
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
+          if (_this.currentOption == 1) engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
+          break;
+      }
+    };
+
+    return _this;
+  }
+
+  return GameOverScene;
+}(Scene_1["default"]);
+
+exports["default"] = GameOverScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./MainMenuScene":"src/MainMenuScene.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1192,7 +1196,7 @@ function (_super) {
 }(Scene_1["default"]);
 
 exports["default"] = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts"}],"src/GameOverScene.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts"}],"src/MainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1235,18 +1239,16 @@ var GameContext_1 = __importDefault(require("./GameContext"));
 
 var PlayingScene_1 = __importDefault(require("./PlayingScene"));
 
-var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
-
-var GameOverScene =
+var MainMenuScene =
 /** @class */
 function (_super) {
-  __extends(GameOverScene, _super);
+  __extends(MainMenuScene, _super);
 
-  function GameOverScene() {
+  function MainMenuScene() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
     _this.currentOption = 0;
-    _this.options = ["play again", "main menu", "quit"];
+    _this.options = ["jugar", "config", "salir"];
 
     _this.render = function () {
       var options = _this.options;
@@ -1258,10 +1260,10 @@ function (_super) {
       context.beginPath();
       context.textAlign = "center";
       context.fillStyle = "lime";
-      context.font = "25px arial";
+      context.font = "25px 'Source Code Pro' ";
       context.strokeStyle = "blue";
-      context.strokeText("GAME OVER", width / 2, 100);
-      context.fillText("GAME OVER", width / 2, 100);
+      context.strokeText("MAIN MENU", width / 2, 100);
+      context.fillText("MAIN MENU", width / 2, 100);
 
       for (var i = 0; i < options.length; i++) {
         if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
@@ -1292,7 +1294,6 @@ function (_super) {
 
         case "Enter":
           if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
-          if (_this.currentOption == 1) engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
           break;
       }
     };
@@ -1300,11 +1301,11 @@ function (_super) {
     return _this;
   }
 
-  return GameOverScene;
+  return MainMenuScene;
 }(Scene_1["default"]);
 
-exports["default"] = GameOverScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./MainMenuScene":"src/MainMenuScene.ts"}],"src/Engine.ts":[function(require,module,exports) {
+exports["default"] = MainMenuScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1319,7 +1320,7 @@ var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Time_1 = __importDefault(require("./Time"));
 
-var GameOverScene_1 = __importDefault(require("./GameOverScene"));
+var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
 
 var Engine =
 /** @class */
@@ -1368,7 +1369,7 @@ function () {
     };
 
     this.init = function () {
-      _this.currentScene = new GameOverScene_1["default"](_this);
+      _this.currentScene = new MainMenuScene_1["default"](_this);
 
       _this.currentScene.enter();
     }; // Método que se ejecuta en cada frame del juego.
@@ -1391,7 +1392,7 @@ function () {
 }();
 
 exports["default"] = Engine;
-},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./GameOverScene":"src/GameOverScene.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./MainMenuScene":"src/MainMenuScene.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {

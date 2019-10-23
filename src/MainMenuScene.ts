@@ -16,8 +16,12 @@ class MainMenuScene extends Scene {
 
     context.textAlign = "center";
     context.fillStyle = "lime";
-    context.font = "25px arial";
+    context.font = "25px 'Source Code Pro' ";
     context.strokeStyle = "blue";
+
+    context.strokeText("MAIN MENU", width / 2, 100);
+    context.fillText("MAIN MENU", width / 2, 100);
+
 
     for (let i = 0; i < options.length; i++) {
       if (i == this.currentOption)

@@ -56,7 +56,6 @@ class Bullet {
     return { x: this.position.x, y: this.position.y, radius: this.radius };
   };
   public update = () => {
-    console.log(this.angleX);
     let { position, target, speed } = this;
 
     this.position.x += this.angleX * this.speed;
