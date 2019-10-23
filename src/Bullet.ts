@@ -9,7 +9,7 @@ class Bullet {
   private range;
   private angleX = 1;
   private angleY = 0;
-  private damage = 15;
+  private damage = 10;
 
   constructor(id, position, target, range, speed) {
     this.id = id;

@@ -12,7 +12,8 @@ class PlayingScene extends Scene {
   private bullets: Bullet[] = [];
   private time = 0;
   private round = 1;
-  private zombies = 1;
+  private zombiesPerRound = 10;
+  private damageMultiplier = 1;
   private multiplier = 1.5;
 
   //done
@@ -42,18 +43,37 @@ class PlayingScene extends Scene {
 
   private lastHit = 0;
   private hitmarks: Damage[] = [];
-  private enemies: Zombie[] = [
-    //zombie array
-    new Zombie({ x: 0, y: 0 }, 5, 20),
-    new Zombie({ x: 500, y: 0 }, 5, 20),
-    new Zombie({ x: 250, y: 0 }, 5, 20),
-    new Zombie({ x: 700, y: -10 }, 5, 20),
-    new Zombie({ x: 100, y: 600 }, 5, 20)
-  ];
+  private enemies: Zombie[] = [];
 
   public randomizeSpawn = () => {
     let { width, height } = GameContext.context.canvas;
   };
+
+  spawnZombie() {
+    let pos = Math.floor(Math.random() * 4);
+    let zombiePosition = this.spawnPosition(pos);
+    let zombie: Zombie = new Zombie(zombiePosition, 5, 20);
+    this.enemies.push(zombie);
+    this.zombiesPerRound--;
+    return;
+  }
+
+  spawnPosition(position) {
+    console.log("SpawnPos: " + position);
+    let { width, height } = GameContext.context.canvas;
+    let spawnerMargin = Math.random() * 150;
+    let x = Math.random() * width;
+    let y = Math.random() * height;
+    if (position == 0) {
+      return { x: -200, y: y };
+    } else if (position == 1) {
+      return { x: x, y: 0 - spawnerMargin };
+    } else if (position == 2) {
+      return { x: width + spawnerMargin, y: y };
+    } else if (position == 3) {
+      return { x: x, y: height + spawnerMargin };
+    }
+  }
 
   //checks for zombie and player collision
   public checkZombieBite = (zombie: Zombie, player: Character) => {
@@ -117,6 +137,9 @@ class PlayingScene extends Scene {
 
     this.character.update();
 
+    if (this.zombiesPerRound > 0) {
+      this.spawnZombie();
+    }
     if (this.character.anyBullets()) {
       this.bullets.push(this.character.nextBullet());
     }

@@ -222,7 +222,7 @@ function () {
     this.radius = 2;
     this.angleX = 1;
     this.angleY = 0;
-    this.damage = 15;
+    this.damage = 10;
 
     this.getDamage = function () {
       return _this.damage;
@@ -496,7 +496,7 @@ function () {
     };
 
     this.moveLogic = function (xPos) {
-      _this.position.x = _this.position.x + _this.speed * _this.direction.x;
+      _this.position.x += _this.speed * _this.direction.x;
       _this.position.y += _this.direction.y * _this.speed;
     };
 
@@ -553,11 +553,9 @@ function () {
       var paddingX = 12;
       var spriteHeight = 35;
       var spriteWidth = 20;
-      context.save();
-
-      if (_this.lastDirection === -1) {
-        context.scale(-1, 1);
-      }
+      context.save(); // if (this.lastDirection === -1) {
+      //   context.scale(-1, 1);
+      // }
 
       context.beginPath();
 
@@ -797,114 +795,7 @@ function () {
 }();
 
 exports.default = Zombie;
-},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
-"use strict";
-
-var __extends = this && this.__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (b.hasOwnProperty(p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var Scene_1 = __importDefault(require("./Scene"));
-
-var GameContext_1 = __importDefault(require("./GameContext"));
-
-var PlayingScene_1 = __importDefault(require("./PlayingScene"));
-
-var MainMenuScene =
-/** @class */
-function (_super) {
-  __extends(MainMenuScene, _super);
-
-  function MainMenuScene() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
-
-    _this.currentOption = 0;
-    _this.options = ["jugar", "config", "salir"];
-
-    _this.render = function () {
-      var options = _this.options;
-      var context = GameContext_1.default.context;
-      var _a = context.canvas,
-          width = _a.width,
-          height = _a.height;
-      context.save();
-      context.beginPath();
-      context.textAlign = "center";
-      context.fillStyle = "lime";
-      context.font = "25px arial";
-      context.strokeStyle = "blue";
-
-      for (var i = 0; i < options.length; i++) {
-        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
-        context.fillText(options[i], width / 2, height / 2 + i * 35);
-      }
-
-      context.closePath();
-      context.restore();
-    };
-
-    _this.update = function () {};
-
-    _this.enter = function () {};
-
-    _this.keyUpHandler = function (event) {};
-
-    _this.keyDownHandler = function (event, engine) {
-      var key = event.key;
-
-      switch (key) {
-        case "ArrowUp":
-          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
-          break;
-
-        case "ArrowDown":
-          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
-
-        case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default());
-      }
-    };
-
-    return _this;
-  }
-
-  return MainMenuScene;
-}(Scene_1.default);
-
-exports.default = MainMenuScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Damage.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/Damage.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1018,7 +909,8 @@ function (_super) {
     _this.bullets = [];
     _this.time = 0;
     _this.round = 1;
-    _this.zombies = 1;
+    _this.zombiesPerRound = 10;
+    _this.damageMultiplier = 1;
     _this.multiplier = 1.5; //done
 
     /**
@@ -1047,23 +939,7 @@ function (_super) {
 
     _this.lastHit = 0;
     _this.hitmarks = [];
-    _this.enemies = [//zombie array
-    new Zombie_1.default({
-      x: 0,
-      y: 0
-    }, 5, 20), new Zombie_1.default({
-      x: 500,
-      y: 0
-    }, 5, 20), new Zombie_1.default({
-      x: 250,
-      y: 0
-    }, 5, 20), new Zombie_1.default({
-      x: 700,
-      y: -10
-    }, 5, 20), new Zombie_1.default({
-      x: 100,
-      y: 600
-    }, 5, 20)];
+    _this.enemies = [];
 
     _this.randomizeSpawn = function () {
       var _a = GameContext_1.default.context.canvas,
@@ -1136,6 +1012,10 @@ function (_super) {
 
       _this.character.update();
 
+      if (_this.zombiesPerRound > 0) {
+        _this.spawnZombie();
+      }
+
       if (_this.character.anyBullets()) {
         _this.bullets.push(_this.character.nextBullet());
       } //update zombies path if player moves
@@ -1201,11 +1081,159 @@ function (_super) {
     return _this;
   }
 
+  PlayingScene.prototype.spawnZombie = function () {
+    var pos = Math.floor(Math.random() * 4);
+    var zombiePosition = this.spawnPosition(pos);
+    var zombie = new Zombie_1.default(zombiePosition, 5, 20);
+    this.enemies.push(zombie);
+    this.zombiesPerRound--;
+    return;
+  };
+
+  PlayingScene.prototype.spawnPosition = function (position) {
+    console.log("SpawnPos: " + position);
+    var _a = GameContext_1.default.context.canvas,
+        width = _a.width,
+        height = _a.height;
+    var spawnerMargin = Math.random() * 150;
+    var x = Math.random() * width;
+    var y = Math.random() * height;
+
+    if (position == 0) {
+      return {
+        x: -200,
+        y: y
+      };
+    } else if (position == 1) {
+      return {
+        x: x,
+        y: 0 - spawnerMargin
+      };
+    } else if (position == 2) {
+      return {
+        x: width + spawnerMargin,
+        y: y
+      };
+    } else if (position == 3) {
+      return {
+        x: x,
+        y: height + spawnerMargin
+      };
+    }
+  };
+
   return PlayingScene;
 }(Scene_1.default);
 
 exports.default = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts"}],"src/Engine.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts","./Damage":"src/Damage.ts"}],"src/MainMenuScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
+var MainMenuScene =
+/** @class */
+function (_super) {
+  __extends(MainMenuScene, _super);
+
+  function MainMenuScene() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.currentOption = 0;
+    _this.options = ["jugar", "config", "salir"];
+
+    _this.render = function () {
+      var options = _this.options;
+      var context = GameContext_1.default.context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      context.save();
+      context.beginPath();
+      context.textAlign = "center";
+      context.fillStyle = "lime";
+      context.font = "25px arial";
+      context.strokeStyle = "blue";
+
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35);
+        context.fillText(options[i], width / 2, height / 2 + i * 35);
+      }
+
+      context.closePath();
+      context.restore();
+    };
+
+    _this.update = function () {};
+
+    _this.enter = function () {};
+
+    _this.keyUpHandler = function (event) {};
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+
+        case "Enter":
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default());
+      }
+    };
+
+    return _this;
+  }
+
+  return MainMenuScene;
+}(Scene_1.default);
+
+exports.default = MainMenuScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1222,7 +1250,7 @@ var GameContext_1 = __importDefault(require("./GameContext"));
 
 var Time_1 = __importDefault(require("./Time"));
 
-var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
 
 var Engine =
 /** @class */
@@ -1271,7 +1299,7 @@ function () {
     };
 
     this.init = function () {
-      _this.currentScene = new PlayingScene_1.default();
+      _this.currentScene = new MainMenuScene_1.default();
 
       _this.currentScene.enter();
     }; // Método que se ejecuta en cada frame del juego.
@@ -1294,7 +1322,7 @@ function () {
 }();
 
 exports.default = Engine;
-},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./MainMenuScene":"src/MainMenuScene.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1348,7 +1376,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56185" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53980" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
