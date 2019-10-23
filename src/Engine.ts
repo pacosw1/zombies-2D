@@ -3,6 +3,7 @@ import Time from "./Time";
 import Scene from "./Scene";
 import PlayingScene from "./PlayingScene";
 import MainMenuScene from "./MainMenuScene";
+import GameOverScene from "./GameOverScene";
 
 class Engine {
   private currentScene: Scene = null;
@@ -46,7 +47,11 @@ class Engine {
     this.currentScene.enter();
   };
   public init = () => {
+<<<<<<< HEAD
     this.currentScene = new MainMenuScene();
+=======
+    this.currentScene = new MainMenuScene(this);
+>>>>>>> 8691fd4cec40d68b20e6cfae3b11016e04815695
     this.currentScene.enter();
   };
 

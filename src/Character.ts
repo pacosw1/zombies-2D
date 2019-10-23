@@ -95,6 +95,14 @@ class Character {
     }
   };
 
+  // returns characters health
+  public isDead = () => {
+    if(this.health <= 0 )
+      return true;
+    else
+      return false;
+  }
+
   //pops next bullet to be fired from local array
   public nextBullet = () => {
     return this.bullets.pop();
@@ -179,9 +187,6 @@ class Character {
     const spriteWidth = 20;
 
     context.save();
-    if (this.lastDirection === -1) {
-      context.scale(-1, 1);
-    }
 
     context.beginPath();
 
