@@ -14,9 +14,24 @@ class PlayingScene extends Scene {
   private bullets: Bullet[] = [];
   private time = 0;
   private round = 1;
-  private zombiesPerRound = 10;
+  private zombiesSpawned = 0;
+  private zombiesPerRound = 1;
+  private zombiesLeft = 1;
   private damageMultiplier = 1;
+  private difficulty = 1;
   private multiplier = 1.5;
+  private secPerSpawn = 1;
+  private lastSpawned = 0;
+
+  nextRound() {
+    this.round++;
+
+    this.zombiesPerRound *= 2 * this.difficulty;
+    this.zombiesLeft = this.zombiesPerRound;
+    this.zombiesSpawned = 0;
+    this.secPerSpawn -= 0.0095 * this.difficulty;
+    console.log("round: " + this.round);
+  }
 
   //done
   /**
@@ -51,17 +66,19 @@ class PlayingScene extends Scene {
     let { width, height } = GameContext.context.canvas;
   };
 
-  spawnZombie() {
-    let pos = Math.floor(Math.random() * 4);
-    let zombiePosition = this.spawnPosition(pos);
-    let zombie: Zombie = new Zombie(zombiePosition, 5, 20);
-    this.enemies.push(zombie);
-    this.zombiesPerRound--;
+  spawnZombie(damage, health) {
+    if ((this.time - this.lastSpawned) / 1000 >= this.secPerSpawn) {
+      let pos = Math.floor(Math.random() * 4);
+      let zombiePosition = this.spawnPosition(pos);
+      let zombie: Zombie = new Zombie(zombiePosition, damage, 20, health);
+      this.enemies.push(zombie);
+      this.zombiesSpawned++;
+      this.lastSpawned = new Date().getTime();
+    }
     return;
   }
 
   spawnPosition(position) {
-    console.log("SpawnPos: " + position);
     let { width, height } = GameContext.context.canvas;
     let spawnerMargin = Math.random() * 150;
     let x = Math.random() * width;
@@ -104,10 +121,13 @@ class PlayingScene extends Scene {
 
     if (distance <= bulletPos.radius + enemyPos.radius + 10) {
       enemy.updateHealth(bullet.getDamage());
-      if (enemy.getHealth() <= 0)
+      if (enemy.getHealth() <= 0) {
+        this.zombiesLeft--;
+        this.character.updateDamage(1.01);
         this.enemies = this.enemies.filter(
           zombie => zombie.getId() !== enemy.getId()
         );
+      }
       let dmg = new Damage(bullet.getDamage(), 1, 20, bullet.getPosition());
 
       this.bullets = this.bullets.filter(bull => bull.id !== bullet.id);
@@ -139,8 +159,11 @@ class PlayingScene extends Scene {
 
     this.character.update();
 
-    if (this.zombiesPerRound > 0) {
-      this.spawnZombie();
+    if (this.zombiesSpawned <= this.zombiesPerRound) {
+      this.spawnZombie(10, 100);
+    }
+    if (this.zombiesLeft == 0) {
+      this.nextRound();
     }
     if (this.character.anyBullets()) {
       this.bullets.push(this.character.nextBullet());
@@ -175,13 +198,13 @@ class PlayingScene extends Scene {
     }
 
     // checks if character is dead
-    if(this.character.isDead())
+    if (this.character.isDead())
       this.engine.setCurrentScene(new GameOverScene(this.engine));
-
   };
 
   public enter = () => {
     this.character = new Character();
+    this.time = new Date().getTime();
   };
 
   public keyUpHandler = (event: KeyboardEvent) => {

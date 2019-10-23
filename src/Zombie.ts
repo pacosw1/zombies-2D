@@ -19,10 +19,11 @@ class Zombie {
   public healthBar: HP = null;
   private characterImage: HTMLImageElement = new Image();
 
-  constructor(position, damage, radius) {
+  constructor(position, damage, radius, health) {
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
     this.characterImage.src = spritesheet;
+    this.health = health;
 
     this.damage = damage;
     this.radius = radius;

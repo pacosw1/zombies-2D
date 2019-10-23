@@ -11,12 +11,13 @@ class Bullet {
   private angleY = 0;
   private damage = 10;
 
-  constructor(id, position, target, range, speed) {
+  constructor(id, position, target, range, speed, damage) {
     this.id = id;
     this.position = position;
     this.target = target;
     this.speed = speed;
     this.range = range;
+    this.damage = damage;
     this.setAngle();
   }
 

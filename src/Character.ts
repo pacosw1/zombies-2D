@@ -22,6 +22,7 @@ class Character {
   private healthBar: HP = null;
   private fireRate = 10;
   private time;
+  private damage = 10;
   private aim = { x: 0, y: 0 };
   private position = { x: 0, y: 0 };
   private direction = { x: 0, y: 0 };
@@ -77,6 +78,10 @@ class Character {
     }
   };
 
+  public updateDamage(multiplier) {
+    this.damage *= 1 * multiplier;
+  }
+
   public keyupHandler = (key: string) => {
     if (
       (key === "d" && this.direction.x === 1) ||
@@ -97,11 +102,9 @@ class Character {
 
   // returns characters health
   public isDead = () => {
-    if(this.health <= 0 )
-      return true;
-    else
-      return false;
-  }
+    if (this.health <= 0) return true;
+    else return false;
+  };
 
   //pops next bullet to be fired from local array
   public nextBullet = () => {
@@ -126,7 +129,8 @@ class Character {
           },
           { x: this.aim.x, y: this.aim.y },
           10,
-          10
+          10,
+          this.damage
         )
       );
       this.lastFired = new Date().getTime(); //update last time a shot was fired
