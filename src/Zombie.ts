@@ -55,7 +55,7 @@ class Zombie {
 
   update() {
     //update health bar
-
+    console.log("%" + this.healthBar.healthPercentage);
     this.healthBar.update();
     this.healthBar.updateHealth(this.health);
 

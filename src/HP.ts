@@ -51,9 +51,11 @@ class HP {
 
   update() {
     this.healthPercentage = this.health / this.maxHealth;
-    if (this.health < 80 && this.health >= 50) this.color = "#fccf03";
-    else if (this.health < 50 && this.health >= 30) this.color = "orange";
-    else if (this.health < 30) this.color = "red";
+    if (this.healthPercentage < 0.8 && this.healthPercentage >= 0.5)
+      this.color = "#fccf03";
+    else if (this.healthPercentage < 0.5 && this.healthPercentage >= 0.3)
+      this.color = "orange";
+    else if (this.healthPercentage < 0.3) this.color = "red";
   }
 }
 

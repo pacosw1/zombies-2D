@@ -9,6 +9,7 @@ import PauseScene from "./PauseScene";
 import GameContext from "./GameContext";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
+import hitmarkSound from "/assets/hitmark.mp3";
 
 class PlayingScene extends Scene {
   private character: Character = null;
@@ -25,7 +26,8 @@ class PlayingScene extends Scene {
   private lastSpawned = 0;
   private healthMultiplier = 1.1;
   private zombieSpeed = 0.5;
-  private zombieBaseHP = 15;
+  private zombieBaseHP = 500;
+  private hit = new Audio(hitmarkSound);
 
   constructor(engine : Engine) {
     super(engine);
@@ -136,6 +138,7 @@ class PlayingScene extends Scene {
     let distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= bulletPos.radius + enemyPos.radius + 10) {
+      this.hit.play();
       enemy.updateHealth(bullet.getDamage());
       if (enemy.getHealth() <= 0) {
         this.zombiesLeft--;
@@ -145,6 +148,7 @@ class PlayingScene extends Scene {
         );
       }
       let dmg = new Damage(bullet.getDamage(), 1, 20, bullet.getPosition());
+      dmg.render();
 
       this.bullets = this.bullets.filter(bull => bull.id !== bullet.id);
     }

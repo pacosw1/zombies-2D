@@ -2,7 +2,7 @@ import GameContext from "./GameContext";
 
 class Damage {
   private value;
-  private duration;
+  private duration = 1;
   private size;
   private position = { x: 0, y: 0 };
 
@@ -19,10 +19,9 @@ class Damage {
     console.log(this.value);
     context.save();
     context.beginPath();
-
-    context.fillStyle = "black";
+    context.fillStyle = "blue";
     context.fillText(this.value + "", x, y, this.size);
-    context.font = "100px times new roman";
+    context.font = "50px times new roman";
     context.fill();
     context.closePath();
     context.restore();

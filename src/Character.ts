@@ -2,6 +2,7 @@ import GameContext from "./GameContext";
 import Time from "./Time";
 import Bullet from "./Bullet";
 import spritesheet from "/assets/FinnSprite.png";
+import hitmarkSound from "/assets/hitmark.mp3";
 import HP from "./HP";
 
 type coords = [number, number];
@@ -31,7 +32,7 @@ class Character {
   private currentFrame = 10;
   private radius = 20;
   private speed = 3.5;
-  private firing = false;
+  private firing = true;
   private bullets: Bullet[] = [];
   private characterImage: HTMLImageElement = new Image();
   private position = {
@@ -70,9 +71,9 @@ class Character {
         this.direction.y = 1;
         this.moving = true;
         break;
-      case "f":
-        this.firing = true;
-        break;
+      // case "f":
+      //   this.firing = true;
+      //   break;
     }
   };
 
@@ -88,7 +89,7 @@ class Character {
       this.moving = false;
       this.direction.x = 0;
     }
-    if (key === "f") this.firing = false;
+    // if (key === "f") this.firing = false;
     if (
       (key === "w" && this.direction.y === -1) ||
       (key === "s" && this.direction.y === 1)
