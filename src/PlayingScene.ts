@@ -5,6 +5,7 @@ import Character from "./Character";
 import Engine from "./Engine";
 import Zombie from "./Zombie";
 import MainMenuScene from "./MainMenuScene";
+import PauseScene from "./PauseScene";
 import GameContext from "./GameContext";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
@@ -26,6 +27,11 @@ class PlayingScene extends Scene {
   private zombieSpeed = 0.5;
   private zombieBaseHP = 15;
 
+  constructor(engine : Engine) {
+    super(engine);
+    this.character = new Character();
+  }
+  
   nextRound() {
     this.round++;
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
@@ -212,7 +218,6 @@ class PlayingScene extends Scene {
   };
 
   public enter = () => {
-    this.character = new Character();
     this.time = new Date().getTime();
   };
 
@@ -226,6 +231,7 @@ class PlayingScene extends Scene {
   public keyDownHandler = (event: KeyboardEvent, engine: Engine) => {
     const { key } = event;
     if (key == "Escape") engine.setCurrentScene(new MainMenuScene(this.engine));
+    if (key == "p") engine.setCurrentScene(new PauseScene(this.engine, this));
     this.character.keydownHandler(key);
   };
 }

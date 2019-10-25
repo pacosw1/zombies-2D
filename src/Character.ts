@@ -24,7 +24,6 @@ class Character {
   private time;
   private damage = 10;
   private aim = { x: 0, y: 0 };
-  private position = { x: 0, y: 0 };
   private direction = { x: 0, y: 0 };
   private characterWidth: number = 70;
   private characterHeight: number = 100;
@@ -35,17 +34,16 @@ class Character {
   private firing = false;
   private bullets: Bullet[] = [];
   private characterImage: HTMLImageElement = new Image();
+  private position = {
+    x: (GameContext.context.canvas.width - this.characterWidth) / 2,
+    y: GameContext.context.canvas.height * 0.75 - this.characterHeight
+  };
 
   constructor() {
     const { context } = GameContext;
     const { width, height } = context.canvas;
     this.characterImage.src = spritesheet;
     this.time = new Date().getTime();
-
-    this.position = {
-      x: (width - this.characterWidth) / 2,
-      y: height * 0.75 - this.characterHeight
-    };
     this.healthBar = new HP(this.position, this.health, this.radius);
   }
 
