@@ -11,7 +11,7 @@ class Zombie {
   public damage = 5;
   private id;
   private radius = 20;
-  private health = 100;
+  private health = 0;
   private currentFrame = 0;
   private frameCounter = 10;
   private characterWidth: number = 70;
@@ -19,9 +19,10 @@ class Zombie {
   public healthBar: HP = null;
   private characterImage: HTMLImageElement = new Image();
 
-  constructor(position, damage, radius, health) {
+  constructor(position, damage, radius, health, speed) {
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
+    this.speed = speed;
     this.characterImage.src = spritesheet;
     this.health = health;
 
@@ -49,11 +50,12 @@ class Zombie {
   }
 
   init() {
-    this.healthBar = new HP(this.position, 100, this.radius);
+    this.healthBar = new HP(this.position, this.health, this.radius);
   }
 
   update() {
     //update health bar
+
     this.healthBar.update();
     this.healthBar.updateHealth(this.health);
 

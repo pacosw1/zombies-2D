@@ -22,15 +22,19 @@ class PlayingScene extends Scene {
   private multiplier = 1.5;
   private secPerSpawn = 1;
   private lastSpawned = 0;
+  private healthMultiplier = 1.1;
+  private zombieSpeed = 0.5;
+  private zombieBaseHP = 15;
 
   nextRound() {
     this.round++;
-
-    this.zombiesPerRound *= 2 * this.difficulty;
+    if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
+    this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
     this.zombiesLeft = this.zombiesPerRound;
     this.zombiesSpawned = 0;
-    this.secPerSpawn -= 0.0095 * this.difficulty;
+    if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.07 * this.difficulty;
     console.log("round: " + this.round);
+    this.zombieBaseHP *= this.healthMultiplier;
   }
 
   //done
@@ -70,7 +74,13 @@ class PlayingScene extends Scene {
     if ((this.time - this.lastSpawned) / 1000 >= this.secPerSpawn) {
       let pos = Math.floor(Math.random() * 4);
       let zombiePosition = this.spawnPosition(pos);
-      let zombie: Zombie = new Zombie(zombiePosition, damage, 20, health);
+      let zombie: Zombie = new Zombie(
+        zombiePosition,
+        damage,
+        20,
+        health,
+        this.zombieSpeed
+      );
       this.enemies.push(zombie);
       this.zombiesSpawned++;
       this.lastSpawned = new Date().getTime();
@@ -123,7 +133,7 @@ class PlayingScene extends Scene {
       enemy.updateHealth(bullet.getDamage());
       if (enemy.getHealth() <= 0) {
         this.zombiesLeft--;
-        this.character.updateDamage(1.01);
+        if (this.zombiesLeft % 5 == 0) this.character.updateDamage(1.01);
         this.enemies = this.enemies.filter(
           zombie => zombie.getId() !== enemy.getId()
         );
@@ -137,7 +147,6 @@ class PlayingScene extends Scene {
   public render = () => {
     //update time
     this.time = new Date().getTime();
-
     this.character.render();
 
     //render bullets
@@ -160,7 +169,7 @@ class PlayingScene extends Scene {
     this.character.update();
 
     if (this.zombiesSpawned <= this.zombiesPerRound) {
-      this.spawnZombie(10, 100);
+      this.spawnZombie(1, this.zombieBaseHP);
     }
     if (this.zombiesLeft == 0) {
       this.nextRound();
