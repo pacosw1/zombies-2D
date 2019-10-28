@@ -33,7 +33,7 @@ class HP {
     context.beginPath();
 
     context.fillStyle = this.color;
-    let start = x - this.playerWidth - 5;
+    let start = x - this.playerWidth;
     for (let i = 0; i <= 100 * this.healthPercentage; i++) {
       context.fillRect(
         start,

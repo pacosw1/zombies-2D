@@ -17,6 +17,8 @@ class Zombie {
   private characterWidth: number = 70;
   private characterHeight: number = 100;
   public healthBar: HP = null;
+  private spriteWidth = 45;
+
   private characterImage: HTMLImageElement = new Image();
 
   constructor(position, damage, radius, health, speed) {
@@ -27,7 +29,7 @@ class Zombie {
     this.health = health;
 
     this.damage = damage;
-    this.radius = radius;
+    this.radius = 27;
     this.init();
   }
 
@@ -82,16 +84,15 @@ class Zombie {
     const paddingY = 35;
     const paddingX = 19;
     const spriteHeight = 64;
-    const spriteWidth = 45;
 
     context.drawImage(
       this.characterImage,
-      this.currentFrame * (spriteWidth + paddingX),
+      this.currentFrame * (this.spriteWidth + paddingX),
       paddingY,
-      spriteWidth,
+      this.spriteWidth,
       spriteHeight,
-      x - 47.5,
-      y - 10,
+      x - 45.5,
+      y - 20,
       this.characterWidth,
       this.characterHeight
     );
@@ -100,8 +101,10 @@ class Zombie {
     // context.moveTo(x, y);
     // context.lineTo(this.target.x, this.target.y);
     context.stroke();
+    // context.arc(x, y, this.radius, 0, 2 * Math.PI);
+
     context.fill();
-    context.strokeStyle = "lime";
+    context.strokeStyle = "black";
     context.closePath();
     context.restore();
   }

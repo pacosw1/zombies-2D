@@ -3,6 +3,7 @@ import Time from "./Time";
 import Bullet from "./Bullet";
 import spritesheet from "/assets/FinnSprite.png";
 import hitmarkSound from "/assets/hitmark.mp3";
+import shot from "/assets/gunshot.mp3";
 import HP from "./HP";
 
 type coords = [number, number];
@@ -30,6 +31,7 @@ class Character {
   private characterHeight: number = 100;
   private frameCounter = 10;
   private currentFrame = 10;
+  private gunshot = new Audio(shot);
   private radius = 20;
   private speed = 3.5;
   private firing = true;

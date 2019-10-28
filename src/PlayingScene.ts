@@ -26,19 +26,20 @@ class PlayingScene extends Scene {
   private multiplier = 1.5;
   private secPerSpawn = 1;
   private lastSpawned = 0;
-  private healthMultiplier = 1.1;
+  private healthMultiplier = 1.33;
   private zombieSpeed = 0.5;
-  private zombieBaseHP = 500;
+  private zombieBaseHP = 20;
   private hit = new Audio(hitmarkSound);
+  private damage: Damage[] = [];
 
-  constructor(engine : Engine) {
+  constructor(engine: Engine) {
     super(engine);
     this.character = new Character();
   }
 
   nextRound() {
     this.round++;
-    if(this.round > 5)
+    if (this.round > 7)
       this.engine.setCurrentScene(new WinningScene(this.engine, this));
     console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
@@ -48,7 +49,6 @@ class PlayingScene extends Scene {
     if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.07 * this.difficulty;
     console.log("round: " + this.round);
     this.zombieBaseHP *= this.healthMultiplier;
-
   }
 
   //done
@@ -126,7 +126,7 @@ class PlayingScene extends Scene {
     let dy = playerPos.y - zombiePos.y;
     let distance = Math.sqrt(dx * dx + dy * dy);
     if (distance <= playerPos.radius + zombiePos.radius + 5) {
-      if ((this.time - this.lastHit) / 1000 >= 0.2) {
+      if ((this.time - this.lastHit) / 1000 >= 0.05) {
         player.updateHealth(zombie.damage);
         this.lastHit = new Date().getTime();
       }
@@ -144,11 +144,14 @@ class PlayingScene extends Scene {
     let distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= bulletPos.radius + enemyPos.radius + 10) {
+      this.damage.push(
+        new Damage(bullet.getDamage(), 0.2, 10, bullet.getPosition())
+      );
       this.hit.play();
       enemy.updateHealth(bullet.getDamage());
       if (enemy.getHealth() <= 0) {
         this.zombiesLeft--;
-        if (this.zombiesLeft % 5 == 0) this.character.updateDamage(1.01);
+        if (this.zombiesLeft % 4 == 0) this.character.updateDamage(1.01);
         this.enemies = this.enemies.filter(
           zombie => zombie.getId() !== enemy.getId()
         );
@@ -171,12 +174,15 @@ class PlayingScene extends Scene {
 
     context.fillText("Round ", 90, 50);
     context.fillStyle = "#98c695";
-    context.fillText("#"+this.round, 145, 50);
-
+    context.fillText("#" + this.round, 145, 50);
 
     //update time
     this.time = new Date().getTime();
     this.character.render();
+
+    for (let i = 0; i < this.damage.length; i++) {
+      this.damage[i].render();
+    }
 
     //render bullets
     for (let i = 0; i < this.bullets.length; i++) {
@@ -197,6 +203,19 @@ class PlayingScene extends Scene {
 
     this.character.update();
 
+    //render damage hits
+    for (let i = 0; i < this.damage.length; i++) {
+      let currDamage = this.damage[i];
+      if (
+        (this.time - currDamage.getTime()) / 1000 >=
+        currDamage.getDuration()
+      ) {
+        this.damage = this.damage.filter(
+          dmg => dmg.getId() !== currDamage.getId()
+        );
+      }
+    }
+
     if (this.zombiesSpawned <= this.zombiesPerRound) {
       this.spawnZombie(1, this.zombieBaseHP);
     }
@@ -205,6 +224,10 @@ class PlayingScene extends Scene {
     }
     if (this.character.anyBullets()) {
       this.bullets.push(this.character.nextBullet());
+    }
+    //update damage
+    for (let i = 0; i < this.damage.length; i++) {
+      this.damage[i].render();
     }
 
     //update zombies path if player moves
