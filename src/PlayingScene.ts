@@ -11,7 +11,7 @@ import GameContext from "./GameContext";
 import WinningScene from "./WinningScene";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
-import WinningScene from "./WinningScene";
+import PrettyGameOverScene from "./PrettyGameOverScene";
 
 import hitmarkSound from "/assets/hitmark.mp3";
 
@@ -40,7 +40,7 @@ class PlayingScene extends Scene {
 
   nextRound() {
     this.round++;
-    if(this.round > 1 )
+    if(this.round > 10 )
       this.engine.setCurrentScene(new WinningScene(this.engine, this));
     console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
@@ -239,7 +239,7 @@ class PlayingScene extends Scene {
 
     // checks if character is dead
     if (this.character.isDead())
-      this.engine.setCurrentScene(new GameOverScene(this.engine));
+      this.engine.setCurrentScene(new PrettyGameOverScene(this.engine));
   };
 
   public enter = () => {

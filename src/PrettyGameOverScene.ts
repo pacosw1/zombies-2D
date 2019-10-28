@@ -3,12 +3,11 @@ import GameContext from "./GameContext";
 import Engine from "./Engine";
 import PlayingScene from "./PlayingScene";
 import GoodbyeScene from "./GoodbyeScene";
-
 import bubbleSound from "/assets/bubble.wav";
 
-class MainMenuScene extends Scene {
+class PrettyGameOverScene extends Scene {
   private currentOption: number = 0;
-  private options = [ "Play", "Quit"];
+  private options = [ "Play Again", "Quit"];
   private choice = new Audio(bubbleSound);
 
   public render = () => {
@@ -24,12 +23,11 @@ class MainMenuScene extends Scene {
     context.font = "70px 'Oswald' ";
     context.strokeStyle = "white";
 
-    context.fillText("MAIN", width / 2 - 80, 140);
+    context.fillText("GAME", width / 2 - 80, 140);
     context.fillStyle = "#98c695";
-    context.fillText("MENU", width / 2 + 85, 140);
+    context.fillText("OVER", width / 2 + 85, 140);
     context.fillStyle = "white";
     context.font = "18px 'Open Sans Condensed' ";
-    context.fillText("a game by Paco Sainz & Caro Obregón", width / 2, 170);
 
     context.font = "35px 'Roboto Mono' ";
 
@@ -74,4 +72,4 @@ class MainMenuScene extends Scene {
   };
 }
 
-export default MainMenuScene;
+export default PrettyGameOverScene;
