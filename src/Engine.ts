@@ -5,6 +5,7 @@ import PlayingScene from "./PlayingScene";
 import MainMenuScene from "./MainMenuScene";
 import PrettyMainMenuScene from "./PrettyMainMenuScene";
 import GameOverScene from "./GameOverScene";
+import WinningScene from "./WinningScene";
 
 class Engine {
   private currentScene: Scene = null;
@@ -48,7 +49,7 @@ class Engine {
     this.currentScene.enter();
   };
   public init = () => {
-    this.currentScene = new PrettyMainMenuScene(this);
+    this.currentScene = new WinningScene(this);
     this.currentScene.enter();
   };
 

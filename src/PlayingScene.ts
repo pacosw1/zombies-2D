@@ -8,8 +8,11 @@ import MainMenuScene from "./MainMenuScene";
 import PauseScene from "./PauseScene";
 import PrettyPauseScene from "./PrettyPauseScene";
 import GameContext from "./GameContext";
+import WinningScene from "./WinningScene";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
+import WinningScene from "./WinningScene";
+
 import hitmarkSound from "/assets/hitmark.mp3";
 
 class PlayingScene extends Scene {
@@ -37,6 +40,9 @@ class PlayingScene extends Scene {
 
   nextRound() {
     this.round++;
+    if(this.round > 1 )
+      this.engine.setCurrentScene(new WinningScene(this.engine, this));
+    console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
     this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
     this.zombiesLeft = this.zombiesPerRound;
@@ -44,6 +50,7 @@ class PlayingScene extends Scene {
     if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.07 * this.difficulty;
     console.log("round: " + this.round);
     this.zombieBaseHP *= this.healthMultiplier;
+
   }
 
   //done
@@ -156,6 +163,19 @@ class PlayingScene extends Scene {
   };
 
   public render = () => {
+    var context = GameContext.context;
+    const { width, height } = context.canvas;
+
+    context.textAlign = "center";
+    context.fillStyle = "white";
+    context.font = "25px 'Roboto Mono' ";
+    context.fillStyle = "#98c695";
+
+    context.fillText("Round ", 90, 50);
+    context.fillStyle = "#98c695";
+    context.fillText("#"+this.round, 145, 50);
+
+
     //update time
     this.time = new Date().getTime();
     this.character.render();
