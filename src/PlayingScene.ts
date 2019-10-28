@@ -15,7 +15,7 @@ class PlayingScene extends Scene {
   private character: Character = null;
   private bullets: Bullet[] = [];
   private time = 0;
-  private round = 1;
+  public round = 1;
   private zombiesSpawned = 0;
   private zombiesPerRound = 1;
   private zombiesLeft = 1;
@@ -33,7 +33,7 @@ class PlayingScene extends Scene {
     super(engine);
     this.character = new Character();
   }
-  
+
   nextRound() {
     this.round++;
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;

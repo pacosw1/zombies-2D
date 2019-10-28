@@ -3,6 +3,7 @@ import Time from "./Time";
 import Scene from "./Scene";
 import PlayingScene from "./PlayingScene";
 import MainMenuScene from "./MainMenuScene";
+import PrettyMainMenuScene from "./PrettyMainMenuScene";
 import GameOverScene from "./GameOverScene";
 
 class Engine {
@@ -35,7 +36,7 @@ class Engine {
 
     context.save();
     context.beginPath();
-    context.fillStyle = "white";
+    context.fillStyle = '#4d4d4d';
     context.fillRect(0, 0, width, height);
 
     context.closePath();
@@ -47,7 +48,7 @@ class Engine {
     this.currentScene.enter();
   };
   public init = () => {
-    this.currentScene = new MainMenuScene(this);
+    this.currentScene = new PrettyMainMenuScene(this);
     this.currentScene.enter();
   };
 
