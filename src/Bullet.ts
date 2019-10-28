@@ -46,7 +46,7 @@ class Bullet {
     context.save();
     context.beginPath();
 
-    context.fillStyle = "black";
+    context.fillStyle = "white";
     context.arc(x, y, this.radius, 0, 2 * Math.PI);
     context.fill();
     context.closePath();

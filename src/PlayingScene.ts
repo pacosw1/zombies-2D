@@ -6,6 +6,7 @@ import Engine from "./Engine";
 import Zombie from "./Zombie";
 import MainMenuScene from "./MainMenuScene";
 import PauseScene from "./PauseScene";
+import PrettyPauseScene from "./PrettyPauseScene";
 import GameContext from "./GameContext";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
@@ -235,7 +236,7 @@ class PlayingScene extends Scene {
   public keyDownHandler = (event: KeyboardEvent, engine: Engine) => {
     const { key } = event;
     if (key == "Escape") engine.setCurrentScene(new MainMenuScene(this.engine));
-    if (key == "p") engine.setCurrentScene(new PauseScene(this.engine, this));
+    if (key == "p") engine.setCurrentScene(new PrettyPauseScene(this.engine, this));
     this.character.keydownHandler(key);
   };
 }

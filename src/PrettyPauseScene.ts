@@ -2,10 +2,19 @@ import Scene from "./Scene";
 import GameContext from "./GameContext";
 import Engine from "./Engine";
 import PlayingScene from "./PlayingScene";
+import MainMenuScene from "./MainMenuScene";
+import PrettyMainMenuScene from "./PrettyMainMenuScene";
 
-class MainMenuScene extends Scene {
+
+class PrettyPauseScene extends Scene {
   private currentOption: number = 0;
-  private options = [ "Play", "Settings", "Quit"];
+  private options = ["Resume", "Config", "Main menu"];
+  private scene : Scene;
+  constructor(engine : Engine, scene : Scene) {
+    super(engine);
+    this.scene = scene;
+  }
+
   public render = () => {
     let { options } = this;
     var context = GameContext.context;
@@ -19,12 +28,9 @@ class MainMenuScene extends Scene {
     context.font = "70px 'Oswald' ";
     context.strokeStyle = "white";
 
-    context.fillText("MAIN", width / 2 - 80, 140);
+    context.fillText("PAUSE", width / 2, 140);
     context.fillStyle = "#98c695";
-    context.fillText("MENU", width / 2 + 85, 140);
-    context.fillStyle = "white";
     context.font = "18px 'Open Sans Condensed' ";
-    context.fillText("a game by Paco Sainz & Caro Obregón", width / 2, 170);
 
     context.font = "35px 'Roboto Mono' ";
 
@@ -37,7 +43,6 @@ class MainMenuScene extends Scene {
         context.fillStyle = "white";
         context.fillText(options[i], width / 2, height / 2 + i * 35 + i*10 + 30);
     }
-
     context.closePath();
     context.restore();
   };
@@ -56,11 +61,21 @@ class MainMenuScene extends Scene {
         this.currentOption = (this.currentOption + 1) % this.options.length;
         break;
       case "Enter":
-        if (this.currentOption === 0)
-          engine.setCurrentScene(new PlayingScene(this.engine));
+        if(this.currentOption === 0){
+          engine.setCurrentScene(this.scene);
           break;
+        }
+        if(this.currentOption === 1){
+          engine.setCurrentScene(new PrettyMainMenuScene(this.engine));
+          break;
+        }
+        if(this.currentOption === 2){
+          engine.setCurrentScene(new PrettyMainMenuScene(this.engine));
+          break;
+        }
+
     }
   };
 }
 
-export default MainMenuScene;
+export default PrettyPauseScene;
