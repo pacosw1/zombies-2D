@@ -38,7 +38,7 @@ class PlayingScene extends Scene {
 
   nextRound() {
     this.round++;
-    if(this.round == 2 )
+    if(this.round > 5)
       this.engine.setCurrentScene(new WinningScene(this.engine, this));
     console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
