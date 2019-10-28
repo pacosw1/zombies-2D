@@ -7,7 +7,7 @@ import PrettyMainMenuScene from "./PrettyMainMenuScene";
 import GameOverScene from "./GameOverScene";
 import WinningScene from "./WinningScene";
 import GoodbyeScene from "./GoodbyeScene";
-import PrettyGameOverScene from "./PrettyGameOverScene";
+import PrettyPauseScene from "./PrettyPauseScene";
 
 class Engine {
   private currentScene: Scene = null;

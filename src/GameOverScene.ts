@@ -2,11 +2,14 @@ import Scene from "./Scene";
 import GameContext from "./GameContext";
 import Engine from "./Engine";
 import PlayingScene from "./PlayingScene";
-import MainMenuScene from "./MainMenuScene";
+import GoodbyeScene from "./GoodbyeScene";
+import bubbleSound from "/assets/bubble.wav";
 
-class GameOverScene extends Scene {
+class PrettyGameOverScene extends Scene {
   private currentOption: number = 0;
-  private options = ["play again", "main menu", "quit"];
+  private options = [ "Play Again", "Quit"];
+  private choice = new Audio(bubbleSound);
+
   public render = () => {
     let { options } = this;
     var context = GameContext.context;
@@ -16,17 +19,26 @@ class GameOverScene extends Scene {
     context.beginPath();
 
     context.textAlign = "center";
-    context.fillStyle = "lime";
-    context.font = "25px arial";
-    context.strokeStyle = "blue";
+    context.fillStyle = "white";
+    context.font = "70px 'Oswald' ";
+    context.strokeStyle = "white";
 
-    context.strokeText("GAME OVER", width / 2, 100);
-    context.fillText("GAME OVER", width / 2, 100);
+    context.fillText("GAME", width / 2 - 80, 140);
+    context.fillStyle = "#98c695";
+    context.fillText("OVER", width / 2 + 85, 140);
+    context.fillStyle = "white";
+    context.font = "18px 'Open Sans Condensed' ";
+
+    context.font = "35px 'Roboto Mono' ";
 
     for (let i = 0; i < options.length; i++) {
-      if (i == this.currentOption)
-        context.strokeText(options[i], width / 2, height / 2 + i * 35);
-      context.fillText(options[i], width / 2, height / 2 + i * 35);
+      if (i == this.currentOption){
+        context.fillStyle = "#98c695";
+        context.fillText(options[i], width / 2, height / 2 + i * 35 + i*10 + 30);
+      }
+      else
+        context.fillStyle = "white";
+        context.fillText(options[i], width / 2, height / 2 + i * 35 + i*10 + 30);
     }
 
     context.closePath();
@@ -42,18 +54,22 @@ class GameOverScene extends Scene {
       case "ArrowUp":
         this.currentOption =
           (this.currentOption - 1 + this.options.length) % this.options.length;
+          this.choice.play();
+
         break;
       case "ArrowDown":
         this.currentOption = (this.currentOption + 1) % this.options.length;
+        this.choice.play();
+
         break;
       case "Enter":
         if (this.currentOption === 0)
           engine.setCurrentScene(new PlayingScene(this.engine));
-        if (this.currentOption == 1)
-          engine.setCurrentScene(new MainMenuScene(this.engine));
-          break;
+        if (this.currentOption === 1)
+          engine.setCurrentScene(new GoodbyeScene(this.engine));
+
     }
   };
 }
 
-export default GameOverScene;
+export default PrettyGameOverScene;
