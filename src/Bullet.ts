@@ -3,7 +3,7 @@ import GameContext from "./GameContext";
 class Bullet {
   private position = { x: 0, y: 0 };
   private target = { x: 0, y: 0 };
-  private speed = 20;
+  private speed = 0;
   public id;
   private radius = 2;
   private range;
@@ -15,7 +15,7 @@ class Bullet {
     this.id = id;
     this.position = position;
     this.target = target;
-    this.speed = speed;
+    this.speed = 10;
     this.range = range;
     this.damage = damage;
     this.setAngle();
@@ -59,7 +59,7 @@ class Bullet {
   public update = () => {
     let { position, target, speed } = this;
 
-    this.position.x += this.angleX * this.speed;
+    this.position.x += this.angleX * 1 * this.speed;
     this.position.y += this.angleY * this.speed;
   };
 }

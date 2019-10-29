@@ -1,4 +1,4 @@
-import Gun from "./Gun";
+import Gun from "./FireArm";
 import GameContext from "./GameContext";
 import Bullet from "./Bullet";
 

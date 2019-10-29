@@ -15,7 +15,7 @@ import hitmarkSound from "/assets/hitmark.mp3";
 
 class PlayingScene extends Scene {
   private character: Character = null;
-  private bullets: Bullet[] = [];
+  public bullets: Bullet[] = [];
   private time = 0;
   public round = 1;
   private zombiesSpawned = 0;
@@ -34,20 +34,18 @@ class PlayingScene extends Scene {
 
   constructor(engine: Engine) {
     super(engine);
-    this.character = new Character();
+    this.character = new Character(this);
   }
 
   nextRound() {
     this.round++;
-    if (this.round > 7)
+    if (this.round > 100)
       this.engine.setCurrentScene(new WinningScene(this.engine, this));
-    console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
     this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
     this.zombiesLeft = this.zombiesPerRound;
     this.zombiesSpawned = 0;
     if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.07 * this.difficulty;
-    console.log("round: " + this.round);
     this.zombieBaseHP *= this.healthMultiplier;
   }
 
@@ -177,7 +175,6 @@ class PlayingScene extends Scene {
     context.fillText("#" + this.round, 145, 50);
 
     //update time
-    this.time = new Date().getTime();
     this.character.render();
 
     for (let i = 0; i < this.damage.length; i++) {
@@ -199,8 +196,10 @@ class PlayingScene extends Scene {
   };
 
   public update = () => {
-    let { width, height } = GameContext.context.canvas;
+    this.time = new Date().getTime();
 
+    let { width, height } = GameContext.context.canvas;
+    console.log(this.bullets.length);
     this.character.update();
 
     //render damage hits
@@ -221,9 +220,6 @@ class PlayingScene extends Scene {
     }
     if (this.zombiesLeft == 0) {
       this.nextRound();
-    }
-    if (this.character.anyBullets()) {
-      this.bullets.push(this.character.nextBullet());
     }
     //update damage
     for (let i = 0; i < this.damage.length; i++) {

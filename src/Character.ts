@@ -4,7 +4,11 @@ import Bullet from "./Bullet";
 import spritesheet from "/assets/FinnSprite.png";
 import hitmarkSound from "/assets/hitmark.mp3";
 import shot from "/assets/gunshot.mp3";
+
 import HP from "./HP";
+import FireArm from "./FireArm";
+import AssualtRifle from "./weapons/assaultRifle";
+import PlayingScene from "./PlayingScene";
 
 type coords = [number, number];
 export enum CharacterDirection {
@@ -16,6 +20,7 @@ export enum CharacterDirection {
 class Character {
   private gravity = 9.8;
 
+  private weapon: FireArm = new AssualtRifle();
   private lastFired = 0;
   private health = 100;
   private start = 0;
@@ -33,16 +38,18 @@ class Character {
   private currentFrame = 10;
   private gunshot = new Audio(shot);
   private radius = 20;
+  private playingScene;
   private speed = 3.5;
-  private firing = true;
-  private bullets: Bullet[] = [];
+  private firing = false;
+
   private characterImage: HTMLImageElement = new Image();
   private position = {
     x: (GameContext.context.canvas.width - this.characterWidth) / 2,
     y: GameContext.context.canvas.height * 0.75 - this.characterHeight
   };
 
-  constructor() {
+  constructor(playingScene: PlayingScene) {
+    this.playingScene = playingScene;
     const { context } = GameContext;
     const { width, height } = context.canvas;
     this.characterImage.src = spritesheet;
@@ -73,9 +80,11 @@ class Character {
         this.direction.y = 1;
         this.moving = true;
         break;
-      // case "f":
-      //   this.firing = true;
-      //   break;
+      case "f":
+        this.firing = true;
+        break;
+      case "r":
+        this.reload();
     }
   };
 
@@ -91,7 +100,7 @@ class Character {
       this.moving = false;
       this.direction.x = 0;
     }
-    // if (key === "f") this.firing = false;
+    if (key === "f") this.firing = false;
     if (
       (key === "w" && this.direction.y === -1) ||
       (key === "s" && this.direction.y === 1)
@@ -101,6 +110,9 @@ class Character {
     }
   };
 
+  reload = () => {
+    this.weapon.reload();
+  };
   // returns characters health
   public isDead = () => {
     if (this.health <= 0) return true;
@@ -108,35 +120,10 @@ class Character {
   };
 
   //pops next bullet to be fired from local array
-  public nextBullet = () => {
-    return this.bullets.pop();
-  };
 
   //checks if any bullets in array
-  public anyBullets = () => {
-    return this.bullets.length > 0;
-  };
 
   //
-  public fire = () => {
-    //waits n seconds before firing a bullet (based on fire rate)
-    if ((this.time - this.lastFired) / 1000 >= 1 / this.fireRate) {
-      this.bullets.push(
-        new Bullet(
-          Date.now() + this.aim.y,
-          {
-            x: this.position.x,
-            y: this.position.y
-          },
-          { x: this.aim.x, y: this.aim.y },
-          10,
-          10,
-          this.damage
-        )
-      );
-      this.lastFired = new Date().getTime(); //update last time a shot was fired
-    }
-  };
 
   public moveLogic = xPos => {
     this.position.x = this.position.x + this.speed * this.direction.x;
@@ -146,6 +133,7 @@ class Character {
 
   public update = () => {
     //updates the health bar
+    this.weapon.update();
     this.healthBar.updateHealth(this.health);
     this.healthBar.update();
     this.time = new Date().getTime();
@@ -155,7 +143,13 @@ class Character {
     let { x, y } = this.position;
     if (this.firing) {
       //add bullets to array while firing = true
-      this.fire();
+      this.weapon.fire(
+        { x: x, y: y },
+        { x: this.aim.x, y: this.aim.y },
+        this.playingScene.bullets,
+        this.time,
+        this.weapon.lastFired
+      );
     }
     // this.jumpLogic(width, height, yPos);
     this.moveLogic(x);
@@ -184,6 +178,7 @@ class Character {
   };
 
   public render = () => {
+    this.weapon.render();
     const { context } = GameContext;
     let { x, y } = this.position;
     const paddingY = 2;
