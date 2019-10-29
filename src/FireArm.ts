@@ -3,7 +3,7 @@ import Bullet from "./Bullet";
 
 abstract class FireArm {
   abstract name;
-  abstract fireRate = 10;
+  abstract fireRate;
   abstract reloadSpeed;
   abstract range;
   abstract magSize;
@@ -15,14 +15,21 @@ abstract class FireArm {
   public abstract render = () => {};
   public abstract update = () => {};
 
-  public fire = (position, target, bullets: Bullet[], time, lastFired) => {
+  public fire = (
+    position,
+    target,
+    bullets: Bullet[],
+    time,
+    lastFired,
+    fireRate
+  ) => {
     //waits n seconds before firing a bullet (based on fire rate)
     if (this.mag < 0) {
       //play empty sound
-    } else if (!this.reloading) {
+    } else if (!this.reloading && this.mag >= 1) {
       //if bullets in mag fire them
       console.log("curr time: " + (time - lastFired) / 1000);
-      if ((time - lastFired) / 1000 >= 1 / this.fireRate) {
+      if ((time - lastFired) / 1000 >= 1 / fireRate) {
         console.log("fire");
         bullets.push(
           new Bullet(
@@ -38,6 +45,18 @@ abstract class FireArm {
         this.mag--; //substract from magazine
       }
     }
+  };
+
+  public getName = () => {
+    return this.name;
+  };
+
+  public getMag = () => {
+    return this.mag;
+  };
+
+  public getMagCap = () => {
+    return this.magSize;
   };
 
   public reload = () => {

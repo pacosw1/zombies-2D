@@ -29,6 +29,7 @@ class Character {
   private healthBar: HP = null;
   private fireRate = 10;
   private time;
+
   private damage = 10;
   private aim = { x: 0, y: 0 };
   private direction = { x: 0, y: 0 };
@@ -88,6 +89,12 @@ class Character {
     }
   };
 
+  public getWeapon = () => {
+    return this.weapon;
+  };
+  public getHealth = () => {
+    this.healthBar.healthPercentage;
+  };
   public updateDamage(multiplier) {
     this.damage *= 1 * multiplier;
   }
@@ -148,7 +155,8 @@ class Character {
         { x: this.aim.x, y: this.aim.y },
         this.playingScene.bullets,
         this.time,
-        this.weapon.lastFired
+        this.weapon.lastFired,
+        this.weapon.fireRate
       );
     }
     // this.jumpLogic(width, height, yPos);

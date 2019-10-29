@@ -12,6 +12,7 @@ import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
 
 import hitmarkSound from "/assets/hitmark.mp3";
+import HeadsUpDisplay from "./overlay/HeadsUpDisplay";
 
 class PlayingScene extends Scene {
   private character: Character = null;
@@ -31,10 +32,16 @@ class PlayingScene extends Scene {
   private zombieBaseHP = 20;
   private hit = new Audio(hitmarkSound);
   private damage: Damage[] = [];
+  private overlay: HeadsUpDisplay;
 
   constructor(engine: Engine) {
     super(engine);
     this.character = new Character(this);
+    this.overlay = new HeadsUpDisplay(
+      this.character.getHealth(),
+      this.character.getWeapon(),
+      100
+    );
   }
 
   nextRound() {
@@ -162,6 +169,7 @@ class PlayingScene extends Scene {
   };
 
   public render = () => {
+    this.overlay.render();
     var context = GameContext.context;
     const { width, height } = context.canvas;
 
@@ -197,6 +205,7 @@ class PlayingScene extends Scene {
 
   public update = () => {
     this.time = new Date().getTime();
+    this.overlay.update();
 
     let { width, height } = GameContext.context.canvas;
     console.log(this.bullets.length);

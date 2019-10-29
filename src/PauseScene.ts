@@ -6,14 +6,13 @@ import MainMenuScene from "./MainMenuScene";
 import PrettyMainMenuScene from "./PrettyMainMenuScene";
 import bubbleSound from "/assets/bubble.wav";
 
-
 class PrettyPauseScene extends Scene {
   private currentOption: number = 0;
   private options = ["Resume", "Main menu"];
-  private scene : Scene;
+  private scene: Scene;
   private choice = new Audio(bubbleSound);
 
-  constructor(engine : Engine, scene : Scene) {
+  constructor(engine: Engine, scene: Scene) {
     super(engine);
     this.scene = scene;
   }
@@ -38,13 +37,19 @@ class PrettyPauseScene extends Scene {
     context.font = "35px 'Roboto Mono' ";
 
     for (let i = 0; i < options.length; i++) {
-      if (i == this.currentOption){
+      if (i == this.currentOption) {
         context.fillStyle = "#98c695";
-        context.fillText(options[i], width / 2, height / 2 + i * 35 + i*10 + 30);
-      }
-      else
-        context.fillStyle = "white";
-        context.fillText(options[i], width / 2, height / 2 + i * 35 + i*10 + 30);
+        context.fillText(
+          options[i],
+          width / 2,
+          height / 2 + i * 35 + i * 10 + 30
+        );
+      } else context.fillStyle = "white";
+      context.fillText(
+        options[i],
+        width / 2,
+        height / 2 + i * 35 + i * 10 + 30
+      );
     }
     context.closePath();
     context.restore();
@@ -52,6 +57,7 @@ class PrettyPauseScene extends Scene {
   public update = () => {};
   public enter = () => {};
   public keyUpHandler = (event: KeyboardEvent) => {};
+  public mouseMoveHandler = (event: MouseEvent) => {};
   public keyDownHandler = (event: KeyboardEvent, engine: Engine) => {
     const key = event.key;
 
@@ -59,7 +65,7 @@ class PrettyPauseScene extends Scene {
       case "ArrowUp":
         this.currentOption =
           (this.currentOption - 1 + this.options.length) % this.options.length;
-          this.choice.play();
+        this.choice.play();
 
         break;
       case "ArrowDown":
@@ -68,15 +74,14 @@ class PrettyPauseScene extends Scene {
 
         break;
       case "Enter":
-        if(this.currentOption === 0){
+        if (this.currentOption === 0) {
           engine.setCurrentScene(this.scene);
           break;
         }
-        if(this.currentOption === 1){
+        if (this.currentOption === 1) {
           engine.setCurrentScene(new PrettyMainMenuScene(this.engine));
           break;
         }
-
     }
   };
 }
