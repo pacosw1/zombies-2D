@@ -10,12 +10,14 @@ class HeadsUpDisplay {
   private selectedWeapon;
   private weapon;
   private ammoBag;
+  private bag;
 
   constructor(health, weapon: FireArm, bag: Inventory) {
     this.weapon = weapon;
     this.health = health;
     this.magCapacity = weapon.getMagCap();
     this.mag = weapon.getMag();
+    this.bag = bag;
     this.ammo = bag.getAmmo(weapon.getType());
   }
 
@@ -34,8 +36,10 @@ class HeadsUpDisplay {
   }
 
   update() {
+    console.log(this.ammo);
     this.magCapacity = this.weapon.getMagCap();
     this.mag = this.weapon.getMag();
+    this.ammo = this.bag.getAmmo(this.weapon.getType());
   }
 }
 

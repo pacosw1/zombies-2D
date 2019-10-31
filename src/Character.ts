@@ -124,12 +124,8 @@ class Character {
   };
 
   reload = () => {
-    this.weapon.reload();
-    this.bag.loadAmmo(
-      this.weapon.type,
-      this.weapon.magSize(),
-      this.weapon.getMag()
-    );
+    let reload = this.bag.loadAmmo();
+    if (reload) this.weapon.reload();
   };
   // returns characters health
   public isDead = () => {
@@ -151,6 +147,7 @@ class Character {
 
   public update = () => {
     //updates the health bar
+    this.bag.update();
     this.weapon.update();
     this.healthBar.updateHealth(this.health);
     this.healthBar.update();

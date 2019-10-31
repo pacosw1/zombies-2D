@@ -15,6 +15,7 @@ import hitmarkSound from "/assets/hitmark.mp3";
 import HeadsUpDisplay from "./overlay/HeadsUpDisplay";
 
 class PlayingScene extends Scene {
+  private points = 0;
   private character: Character = null;
   public bullets: Bullet[] = [];
   private time = 0;
@@ -149,6 +150,7 @@ class PlayingScene extends Scene {
     let distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= bulletPos.radius + enemyPos.radius + 10) {
+      this.points += Math.round(bullet.getDamage() / 100 + 10);
       this.damage.push(
         new Damage(bullet.getDamage(), 0.2, 10, bullet.getPosition())
       );
@@ -179,6 +181,7 @@ class PlayingScene extends Scene {
     context.fillStyle = "#98c695";
 
     context.fillText("Round ", 90, 50);
+    context.fillText("Points " + this.points, 90, 80);
     context.fillStyle = "#98c695";
     context.fillText("#" + this.round, 145, 50);
 

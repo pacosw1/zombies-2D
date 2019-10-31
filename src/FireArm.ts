@@ -65,6 +65,10 @@ abstract class FireArm {
     return this.magSize;
   };
 
+  public load = bullets => {
+    this.mag += bullets;
+  };
+
   public reload = () => {
     // this.reloading = true;
     this.reloadGUn.play();

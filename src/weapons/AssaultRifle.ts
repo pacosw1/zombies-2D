@@ -6,7 +6,7 @@ class AssualtRifle extends FireArm {
   speed = 7;
   damage = 5;
   reloadSpeed = 0.8;
-  magSize = 10000;
+  magSize = 40;
   reloading = false;
   type = "ar";
   accuracy = 1;

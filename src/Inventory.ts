@@ -18,16 +18,27 @@ class Inventory {
     this.items.push(weapon, this.bulletPouch);
   }
 
+  update() {
+    console.log(this.bulletPouch);
+  }
+
   getAmmo = type => {
     return this.bulletPouch[type];
   };
   pickUpAmmo = (type, qty) => {
     this.bulletPouch[type] += qty;
   };
-  loadAmmo = (bulletType, magSize, mag) => {
-    let deltaAmmo = magSize - mag;
-    if (this.bulletPouch[bulletType] >= deltaAmmo)
-      this.bulletPouch[bulletType] -= deltaAmmo;
+  loadAmmo = () => {
+    let { getMag, getMagCap, getType, load } = this.items[0];
+    let deltaAmmo = getMagCap() - getMag();
+    if (this.bulletPouch[getType()] >= deltaAmmo) {
+      this.bulletPouch[getType()] -= deltaAmmo;
+      return true;
+    } else {
+      load(this.bulletPouch[getType()]);
+      this.bulletPouch[getType()] = 0;
+    }
+    return false;
   };
 
   pickUpWeapon = weapon => {
