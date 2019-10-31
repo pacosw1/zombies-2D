@@ -10,7 +10,7 @@ import GameContext from "./GameContext";
 import WinningScene from "./WinningScene";
 import Damage from "./Damage";
 import GameOverScene from "./GameOverScene";
-
+import hit from "/assets/hit.mp3";
 import hitmarkSound from "/assets/hitmark.mp3";
 import HeadsUpDisplay from "./overlay/HeadsUpDisplay";
 
@@ -40,7 +40,7 @@ class PlayingScene extends Scene {
     this.overlay = new HeadsUpDisplay(
       this.character.getHealth(),
       this.character.getWeapon(),
-      100
+      this.character.getBag()
     );
   }
 

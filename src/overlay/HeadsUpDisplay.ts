@@ -1,5 +1,6 @@
 import GameContext from "../GameContext";
 import FireArm from "../FireArm";
+import Inventory from "../Inventory";
 
 class HeadsUpDisplay {
   private health;
@@ -8,13 +9,14 @@ class HeadsUpDisplay {
   private ammo;
   private selectedWeapon;
   private weapon;
+  private ammoBag;
 
-  constructor(health, weapon: FireArm, ammo) {
+  constructor(health, weapon: FireArm, bag: Inventory) {
     this.weapon = weapon;
     this.health = health;
     this.magCapacity = weapon.getMagCap();
     this.mag = weapon.getMag();
-    this.ammo = ammo;
+    this.ammo = bag.getAmmo(weapon.getType());
   }
 
   render() {
@@ -24,7 +26,7 @@ class HeadsUpDisplay {
     context.beginPath();
     context.fillStyle = "white";
     context.fillText(this.mag + "/" + this.ammo, 50, height - 25, 50);
-    context.fillText(this.weapon.getName(), 120, height - 25, 60);
+    context.fillText(this.weapon.getType(), 120, height - 25, 60);
     context.font = "50px times new roman";
     context.fill();
     context.closePath();

@@ -9,6 +9,7 @@ import HP from "./HP";
 import FireArm from "./FireArm";
 import AssualtRifle from "./weapons/assaultRifle";
 import PlayingScene from "./PlayingScene";
+import Inventory from "./Inventory";
 
 type coords = [number, number];
 export enum CharacterDirection {
@@ -19,7 +20,7 @@ export enum CharacterDirection {
 
 class Character {
   private gravity = 9.8;
-
+  private bag: Inventory;
   private weapon: FireArm = new AssualtRifle();
   private lastFired = 0;
   private health = 100;
@@ -55,6 +56,7 @@ class Character {
     const { width, height } = context.canvas;
     this.characterImage.src = spritesheet;
     this.time = new Date().getTime();
+    this.bag = new Inventory(this.weapon);
     this.healthBar = new HP(this.position, this.health, this.radius);
   }
 
@@ -89,6 +91,10 @@ class Character {
     }
   };
 
+  public getBag = () => {
+    return this.bag;
+  };
+
   public getWeapon = () => {
     return this.weapon;
   };
@@ -119,6 +125,11 @@ class Character {
 
   reload = () => {
     this.weapon.reload();
+    this.bag.loadAmmo(
+      this.weapon.type,
+      this.weapon.magSize(),
+      this.weapon.getMag()
+    );
   };
   // returns characters health
   public isDead = () => {

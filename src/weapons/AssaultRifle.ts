@@ -8,7 +8,7 @@ class AssualtRifle extends FireArm {
   reloadSpeed = 0.8;
   magSize = 10000;
   reloading = false;
-  name = "AR-15";
+  type = "ar";
   accuracy = 1;
   lastFired = new Date().getTime();
   private reloadStart = 0;
