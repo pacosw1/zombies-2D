@@ -1175,7 +1175,9 @@ function (_super) {
 }(Scene_1.default);
 
 exports.default = MainMenuScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"assets/bubble.wav":[function(require,module,exports) {
+module.exports = "/bubble.49d872f2.wav";
+},{}],"src/PauseScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1216,204 +1218,321 @@ Object.defineProperty(exports, "__esModule", {
 
 var Scene_1 = __importDefault(require("./Scene"));
 
-var Character_1 = __importDefault(require("./Character"));
-
-var Zombie_1 = __importDefault(require("./Zombie"));
-
-var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
-
 var GameContext_1 = __importDefault(require("./GameContext"));
 
-var PlayingScene =
+var PrettyMainMenuScene_1 = __importDefault(require("./PrettyMainMenuScene"));
+
+var bubble_wav_1 = __importDefault(require("/assets/bubble.wav"));
+
+var PrettyPauseScene =
 /** @class */
 function (_super) {
-  __extends(PlayingScene, _super);
+  __extends(PrettyPauseScene, _super);
 
-  function PlayingScene() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
+  function PrettyPauseScene(engine, scene) {
+    var _this = _super.call(this, engine) || this;
 
-    _this.character = null;
-    _this.bullets = [];
-    _this.time = 0;
-    _this.round = 1;
-    _this.zombies = 1;
-    _this.multiplier = 1.5; //done
-
-    /**
-     * 1. Player can shoot based on mouse coordiantes
-     * 2. Player can move around
-     * 3. Zombies follow player around
-     * 4. Health bars
-     * 5. Bullets damage zombies
-     * 6. zombies damage player based on attack speed
-     */
-    //to do
-
-    /**
-     * 1. Implement rounds
-     * 2. Diferent types of zombies, with different stats (optional)
-     * 3. PowerUps (shields, dmg, etc..)  (optional)
-     * 4. Physics to prevent zombie overlap
-     * 5. spawn zombies randombly from outside all sides of canvas
-     * 6. Sprites
-     * 7. Animations
-     * 8. Obstacles
-     * 9. Game Over Screen
-     * 10. add sound effects, music
-     * 11. Pause Game
-     * 12.
-     */
-
-    _this.lastHit = 0;
-    _this.enemies = [//zombie array
-    new Zombie_1.default({
-      x: 0,
-      y: 0
-    }, 5, 20), new Zombie_1.default({
-      x: 500,
-      y: 0
-    }, 5, 20)];
-
-    _this.randomizeSpawn = function () {
-      var _a = GameContext_1.default.context.canvas,
-          width = _a.width,
-          height = _a.height;
-    }; //checks for zombie and player collision
-
-
-    _this.checkZombieBite = function (zombie, player) {
-      var playerPos = player.getPosition();
-      var zombiePos = zombie.getPostion();
-      var dx = playerPos.x - zombiePos.x;
-      var dy = playerPos.y - zombiePos.y;
-      var distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance <= playerPos.radius + zombiePos.radius + 5) {
-        if ((_this.time - _this.lastHit) / 1000 >= 0.2) {
-          player.updateHealth(zombie.damage);
-          _this.lastHit = new Date().getTime();
-        }
-      }
-    }; //checks for bullet and zombies collision
-
-
-    _this.checkBulletHit = function (enemy, bullet) {
-      if (!enemy || !bullet) return;
-      var bulletPos = bullet.getPosition();
-      var enemyPos = enemy.getPostion();
-      var dx = bulletPos.x - enemyPos.x;
-      var dy = bulletPos.y - enemyPos.y;
-      var distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance <= bulletPos.radius + enemyPos.radius + 5) {
-        enemy.updateHealth(bullet.getDamage());
-        if (enemy.getHealth() <= 0) _this.enemies = _this.enemies.filter(function (zombie) {
-          return zombie.getId() !== enemy.getId();
-        });
-        _this.bullets = _this.bullets.filter(function (bull) {
-          return bull.id !== bullet.id;
-        });
-      }
-    };
+    _this.currentOption = 0;
+    _this.options = ["Resume", "Main menu"];
+    _this.choice = new Audio(bubble_wav_1.default);
 
     _this.render = function () {
-      //update time
-      _this.time = new Date().getTime();
-
-      _this.character.render(); //render bullets
-
-
-      for (var i = 0; i < _this.bullets.length; i++) {
-        _this.bullets[i].render();
-      } //render zombies
-
-
-      for (var i = 0; i < _this.enemies.length; i++) {
-        if (_this.enemies[i]) _this.enemies[i].render();
-      }
-    };
-
-    _this.addBullet = function (bullet) {
-      _this.bullets.push(bullet);
-    };
-
-    _this.update = function () {
-      var _a = GameContext_1.default.context.canvas,
+      var options = _this.options;
+      var context = GameContext_1.default.context;
+      var _a = context.canvas,
           width = _a.width,
           height = _a.height;
+      context.save();
+      context.beginPath();
+      context.textAlign = "center";
+      context.fillStyle = "white";
+      context.font = "70px 'Oswald' ";
+      context.strokeStyle = "white";
+      context.fillText("PAUSE", width / 2, 140);
+      context.fillStyle = "#98c695";
+      context.font = "18px 'Open Sans Condensed' ";
+      context.font = "35px 'Roboto Mono' ";
 
-      _this.character.update();
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) {
+          context.fillStyle = "#98c695";
+          context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
+        } else context.fillStyle = "white";
 
-      if (_this.character.anyBullets()) {
-        _this.bullets.push(_this.character.nextBullet());
-      } //update zombies path if player moves
-
-
-      for (var i = 0; i < _this.enemies.length; i++) {
-        _this.enemies[i].follow(_this.character);
-
-        _this.enemies[i].update();
-      } //check zombie damage
-
-
-      for (var i = 0; i < _this.enemies.length; i++) {
-        _this.checkZombieBite(_this.enemies[i], _this.character);
-      } //check bullet collision
-
-
-      if (_this.bullets.length > 0) {
-        for (var i = 0; i < _this.enemies.length; i++) {
-          for (var j = 0; j < _this.bullets.length; j++) {
-            _this.checkBulletHit(_this.enemies[i], _this.bullets[j]);
-          }
-        }
+        context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
       }
 
-      var _loop_1 = function _loop_1(i) {
-        var pos = _this.bullets[i].getPosition();
-
-        if (pos.x < 0 || pos.x > width || pos.y < 0 || pos.y > height) {
-          _this.bullets = _this.bullets.filter(function (x) {
-            return x.id !== _this.bullets[i].id;
-          });
-        } else _this.bullets[i].update();
-      }; //if bullets move outside canvas, delete them
-
-
-      for (var i = 0; i < _this.bullets.length; i++) {
-        _loop_1(i);
-      }
+      context.closePath();
+      context.restore();
     };
 
-    _this.enter = function () {
-      _this.character = new Character_1.default();
-    };
+    _this.update = function () {};
 
-    _this.keyUpHandler = function (event) {
-      var key = event.key;
+    _this.enter = function () {};
 
-      _this.character.keyupHandler(key);
-    };
+    _this.keyUpHandler = function (event) {};
 
-    _this.mouseMoveHandler = function (event) {
-      _this.character.mouseMoveHandler(event);
-    };
+    _this.mouseMoveHandler = function (event) {};
 
     _this.keyDownHandler = function (event, engine) {
       var key = event.key;
-      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1.default());
 
-      _this.character.keydownHandler(key);
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+
+          _this.choice.play();
+
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+
+          _this.choice.play();
+
+          break;
+
+        case "Enter":
+          if (_this.currentOption === 0) {
+            engine.setCurrentScene(_this.scene);
+            break;
+          }
+
+          if (_this.currentOption === 1) {
+            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
+            break;
+          }
+
+      }
     };
 
+    _this.scene = scene;
     return _this;
   }
 
-  return PlayingScene;
+  return PrettyPauseScene;
 }(Scene_1.default);
 
-exports.default = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./GameContext":"src/GameContext.ts"}],"src/GoodbyeScene.ts":[function(require,module,exports) {
+exports.default = PrettyPauseScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"src/WinningScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
+var PrettyMainMenuScene_1 = __importDefault(require("./PrettyMainMenuScene"));
+
+var FinnSprite_png_1 = __importDefault(require("/assets/FinnSprite.png"));
+
+var characterImage = new Image();
+characterImage.src = FinnSprite_png_1.default;
+
+var WinningScene =
+/** @class */
+function (_super) {
+  __extends(WinningScene, _super);
+
+  function WinningScene(engine, scene) {
+    var _this = _super.call(this, engine) || this;
+
+    _this.characterWidth = 70;
+    _this.characterHeight = 100;
+    _this.currentOption = 0;
+    _this.options = ["Start Over", "Main menu"];
+    _this.currentFrame = 10;
+    _this.frameCounter = 10;
+
+    _this.render = function () {
+      var options = _this.options;
+      var context = GameContext_1.default.context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      var x = width / 2;
+      var y = 180;
+      var paddingY = 2;
+      var paddingX = 12;
+      var spriteHeight = 35;
+      var spriteWidth = 20;
+      context.save();
+      context.beginPath();
+      context.drawImage(characterImage, _this.currentFrame * (spriteWidth + paddingX), paddingY, spriteWidth, spriteHeight, x - 47.5, y - 30, _this.characterWidth, _this.characterHeight);
+      context.textAlign = "center";
+      context.fillStyle = "white";
+      context.font = "70px 'Oswald' ";
+      context.strokeStyle = "white";
+      context.fillText("YOU WON !", width / 2, 140);
+      context.fillStyle = "#98c695";
+      context.font = "18px 'Open Sans Condensed' ";
+      context.font = "35px 'Roboto Mono' ";
+
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) {
+          context.fillStyle = "#98c695";
+          context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
+        } else context.fillStyle = "white";
+
+        context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
+      }
+
+      context.closePath();
+      context.restore();
+    };
+
+    _this.update = function () {
+      if (_this.frameCounter % 15 === 0) _this.currentFrame = (_this.currentFrame + 1) % 9;
+      _this.frameCounter += 1;
+    };
+
+    _this.enter = function () {};
+
+    _this.keyUpHandler = function (event) {};
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+          break;
+
+        case "Enter":
+          if (_this.currentOption === 0) {
+            engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
+            break;
+          }
+
+          if (_this.currentOption === 1) {
+            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
+            break;
+          }
+
+      }
+    };
+
+    _this.scene = scene;
+    return _this;
+  }
+
+  return WinningScene;
+}(Scene_1.default);
+
+exports.default = WinningScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts","/assets/FinnSprite.png":"assets/FinnSprite.png"}],"src/Damage.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var Damage =
+/** @class */
+function () {
+  function Damage(value, duration, size, position) {
+    var _this = this;
+
+    this.duration = 0.05;
+    this.time = 0;
+    this.position = {
+      x: 0,
+      y: 0
+    };
+    this.id = "";
+
+    this.getId = function () {
+      return _this.id;
+    };
+
+    this.getDuration = function () {
+      return _this.duration;
+    };
+
+    this.getTime = function () {
+      return _this.time;
+    };
+
+    this.value = value.toFixed(1);
+    this.duration = duration;
+    this.size = size;
+    this.position = position;
+    this.time = new Date().getTime();
+    this.id = this.time + "" + this.value + this.duration + this.position + "";
+  }
+
+  Damage.prototype.render = function () {
+    var context = GameContext_1.default.context;
+    var _a = this.position,
+        x = _a.x,
+        y = _a.y;
+    console.log(this.value);
+    context.save();
+    context.beginPath();
+    context.fillStyle = "white";
+    context.fillText(this.value + "", x, y, 50);
+    context.font = "50px times new roman";
+    context.fill();
+    context.closePath();
+    context.restore();
+  };
+
+  Damage.prototype.update = function () {};
+
+  return Damage;
+}();
+
+exports.default = Damage;
+},{"./GameContext":"src/GameContext.ts"}],"src/GoodbyeScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1544,9 +1663,570 @@ function (_super) {
 }(Scene_1.default);
 
 exports.default = PrettyPauseScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts"}],"assets/bubble.wav":[function(require,module,exports) {
-module.exports = "/bubble.49d872f2.wav";
-},{}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts"}],"src/GameOverScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
+var GoodbyeScene_1 = __importDefault(require("./GoodbyeScene"));
+
+var bubble_wav_1 = __importDefault(require("/assets/bubble.wav"));
+
+var PrettyGameOverScene =
+/** @class */
+function (_super) {
+  __extends(PrettyGameOverScene, _super);
+
+  function PrettyGameOverScene() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.currentOption = 0;
+    _this.options = ["Play Again", "Quit"];
+    _this.choice = new Audio(bubble_wav_1.default);
+
+    _this.render = function () {
+      var options = _this.options;
+      var context = GameContext_1.default.context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      context.save();
+      context.beginPath();
+      context.textAlign = "center";
+      context.fillStyle = "white";
+      context.font = "70px 'Oswald' ";
+      context.strokeStyle = "white";
+      context.fillText("GAME", width / 2 - 80, 140);
+      context.fillStyle = "#98c695";
+      context.fillText("OVER", width / 2 + 85, 140);
+      context.fillStyle = "white";
+      context.font = "18px 'Open Sans Condensed' ";
+      context.font = "35px 'Roboto Mono' ";
+
+      for (var i = 0; i < options.length; i++) {
+        if (i == _this.currentOption) {
+          context.fillStyle = "#98c695";
+          context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
+        } else context.fillStyle = "white";
+
+        context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
+      }
+
+      context.closePath();
+      context.restore();
+    };
+
+    _this.update = function () {};
+
+    _this.enter = function () {};
+
+    _this.keyUpHandler = function (event) {};
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+
+      switch (key) {
+        case "ArrowUp":
+          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
+
+          _this.choice.play();
+
+          break;
+
+        case "ArrowDown":
+          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
+
+          _this.choice.play();
+
+          break;
+
+        case "Enter":
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
+          if (_this.currentOption === 1) engine.setCurrentScene(new GoodbyeScene_1.default(_this.engine));
+      }
+    };
+
+    return _this;
+  }
+
+  return PrettyGameOverScene;
+}(Scene_1.default);
+
+exports.default = PrettyGameOverScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./GoodbyeScene":"src/GoodbyeScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"assets/hitmark.mp3":[function(require,module,exports) {
+module.exports = "/hitmark.0e8c8efa.mp3";
+},{}],"src/overlay/HeadsUpDisplay.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var GameContext_1 = __importDefault(require("../GameContext"));
+
+var HeadsUpDisplay =
+/** @class */
+function () {
+  function HeadsUpDisplay(health, weapon, bag) {
+    this.weapon = weapon;
+    this.health = health;
+    this.magCapacity = weapon.getMagCap();
+    this.mag = weapon.getMag();
+    this.bag = bag;
+    this.ammo = bag.getAmmo(weapon.getType());
+  }
+
+  HeadsUpDisplay.prototype.render = function () {
+    var context = GameContext_1.default.context;
+    var _a = context.canvas,
+        width = _a.width,
+        height = _a.height;
+    context.save();
+    context.beginPath();
+    context.fillStyle = "white";
+    context.fillText(this.mag + "/" + this.ammo, 50, height - 25, 50);
+    context.fillText(this.weapon.getType(), 120, height - 25, 60);
+    context.font = "50px times new roman";
+    context.fill();
+    context.closePath();
+    context.restore();
+  };
+
+  HeadsUpDisplay.prototype.update = function () {
+    console.log(this.ammo);
+    this.magCapacity = this.weapon.getMagCap();
+    this.mag = this.weapon.getMag();
+    this.ammo = this.bag.getAmmo(this.weapon.getType());
+  };
+
+  return HeadsUpDisplay;
+}();
+
+exports.default = HeadsUpDisplay;
+},{"../GameContext":"src/GameContext.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Scene_1 = __importDefault(require("./Scene"));
+
+var Character_1 = __importDefault(require("./Character"));
+
+var Zombie_1 = __importDefault(require("./Zombie"));
+
+var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
+
+var PauseScene_1 = __importDefault(require("./PauseScene"));
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var WinningScene_1 = __importDefault(require("./WinningScene"));
+
+var Damage_1 = __importDefault(require("./Damage"));
+
+var GameOverScene_1 = __importDefault(require("./GameOverScene"));
+
+var hitmark_mp3_1 = __importDefault(require("/assets/hitmark.mp3"));
+
+var HeadsUpDisplay_1 = __importDefault(require("./overlay/HeadsUpDisplay"));
+
+var PlayingScene =
+/** @class */
+function (_super) {
+  __extends(PlayingScene, _super);
+
+  function PlayingScene(engine) {
+    var _this = _super.call(this, engine) || this;
+
+    _this.points = 0;
+    _this.character = null;
+    _this.bullets = [];
+    _this.time = 0;
+    _this.round = 1;
+    _this.zombiesSpawned = 0;
+    _this.zombiesPerRound = 1;
+    _this.zombiesLeft = 1;
+    _this.damageMultiplier = 1;
+    _this.difficulty = 1;
+    _this.multiplier = 1.5;
+    _this.secPerSpawn = 1;
+    _this.lastSpawned = 0;
+    _this.healthMultiplier = 1.33;
+    _this.zombieSpeed = 0.5;
+    _this.zombieBaseHP = 20;
+    _this.hit = new Audio(hitmark_mp3_1.default);
+    _this.damage = []; //done
+
+    /**
+     * 1. Player can shoot based on mouse coordiantes
+     * 2. Player can move around
+     * 3. Zombies follow player around
+     * 4. Health bars
+     * 5. Bullets damage zombies
+     * 6. zombies damage player based on attack speed
+     */
+    //to do
+
+    /**
+     * 1. Implement rounds
+     * 2. Diferent types of zombies, with different stats (optional)
+     * 3. PowerUps (shields, dmg, etc..)  (optional)
+     * 4. Physics to prevent zombie overlap
+     * 5. spawn zombies randombly from outside all sides of canvas
+     * 6. Sprites
+     * 7. Animations
+     * 8. Obstacles
+     * 9. Game Over Screen
+     * 10. sound effects, music
+     * 11. Pause Game
+     */
+
+    _this.lastHit = 0;
+    _this.hitmarks = [];
+    _this.enemies = [];
+
+    _this.randomizeSpawn = function () {
+      var _a = GameContext_1.default.context.canvas,
+          width = _a.width,
+          height = _a.height;
+    }; //checks for zombie and player collision
+
+
+    _this.checkZombieBite = function (zombie, player) {
+      var playerPos = player.getPosition();
+      var zombiePos = zombie.getPostion();
+      var dx = playerPos.x - zombiePos.x;
+      var dy = playerPos.y - zombiePos.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= playerPos.radius + zombiePos.radius + 5) {
+        if ((_this.time - _this.lastHit) / 1000 >= 0.05) {
+          player.updateHealth(zombie.damage);
+          _this.lastHit = new Date().getTime();
+        }
+      }
+    }; //checks for bullet and zombies collision
+
+
+    _this.checkBulletHit = function (enemy, bullet) {
+      if (!enemy || !bullet) return;
+      var bulletPos = bullet.getPosition();
+      var enemyPos = enemy.getPostion();
+      var dx = bulletPos.x - enemyPos.x;
+      var dy = bulletPos.y - enemyPos.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= bulletPos.radius + enemyPos.radius + 10) {
+        _this.points += Math.round(bullet.getDamage() / 100 + 10);
+
+        _this.damage.push(new Damage_1.default(bullet.getDamage(), 0.2, 10, bullet.getPosition()));
+
+        _this.hit.play();
+
+        enemy.updateHealth(bullet.getDamage());
+
+        if (enemy.getHealth() <= 0) {
+          _this.zombiesLeft--;
+          if (_this.zombiesLeft % 4 == 0) _this.character.updateDamage(1.01);
+          _this.enemies = _this.enemies.filter(function (zombie) {
+            return zombie.getId() !== enemy.getId();
+          });
+        }
+
+        var dmg = new Damage_1.default(bullet.getDamage(), 1, 20, bullet.getPosition());
+        dmg.render();
+        _this.bullets = _this.bullets.filter(function (bull) {
+          return bull.id !== bullet.id;
+        });
+      }
+    };
+
+    _this.render = function () {
+      _this.overlay.render();
+
+      var context = GameContext_1.default.context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      context.textAlign = "center";
+      context.fillStyle = "white";
+      context.font = "25px 'Roboto Mono' ";
+      context.fillStyle = "#98c695";
+      context.fillText("Round ", 90, 50);
+      context.fillText("Points " + _this.points, 90, 80);
+      context.fillStyle = "#98c695";
+      context.fillText("#" + _this.round, 145, 50); //update time
+
+      _this.character.render();
+
+      for (var i = 0; i < _this.damage.length; i++) {
+        _this.damage[i].render();
+      } //render bullets
+
+
+      for (var i = 0; i < _this.bullets.length; i++) {
+        _this.bullets[i].render();
+      } //render zombies
+
+
+      for (var i = 0; i < _this.enemies.length; i++) {
+        if (_this.enemies[i]) _this.enemies[i].render();
+      }
+    };
+
+    _this.addBullet = function (bullet) {
+      _this.bullets.push(bullet);
+    };
+
+    _this.update = function () {
+      _this.time = new Date().getTime();
+
+      _this.overlay.update();
+
+      var _a = GameContext_1.default.context.canvas,
+          width = _a.width,
+          height = _a.height;
+      console.log(_this.bullets.length);
+
+      _this.character.update();
+
+      var _loop_1 = function _loop_1(i) {
+        var currDamage = _this.damage[i];
+
+        if ((_this.time - currDamage.getTime()) / 1000 >= currDamage.getDuration()) {
+          _this.damage = _this.damage.filter(function (dmg) {
+            return dmg.getId() !== currDamage.getId();
+          });
+        }
+      }; //render damage hits
+
+
+      for (var i = 0; i < _this.damage.length; i++) {
+        _loop_1(i);
+      }
+
+      if (_this.zombiesSpawned <= _this.zombiesPerRound) {
+        _this.spawnZombie(1, _this.zombieBaseHP);
+      }
+
+      if (_this.zombiesLeft == 0) {
+        _this.nextRound();
+      } //update damage
+
+
+      for (var i = 0; i < _this.damage.length; i++) {
+        _this.damage[i].render();
+      } //update zombies path if player moves
+
+
+      for (var i = 0; i < _this.enemies.length; i++) {
+        _this.enemies[i].follow(_this.character);
+
+        _this.enemies[i].update();
+      } //check zombie damage
+
+
+      for (var i = 0; i < _this.enemies.length; i++) {
+        _this.checkZombieBite(_this.enemies[i], _this.character);
+      } //check bullet collision
+
+
+      if (_this.bullets.length > 0) {
+        for (var i = 0; i < _this.enemies.length; i++) {
+          for (var j = 0; j < _this.bullets.length; j++) {
+            _this.checkBulletHit(_this.enemies[i], _this.bullets[j]);
+          }
+        }
+      }
+
+      var _loop_2 = function _loop_2(i) {
+        var pos = _this.bullets[i].getPosition();
+
+        if (pos.x < 0 || pos.x > width || pos.y < 0 || pos.y > height) {
+          _this.bullets = _this.bullets.filter(function (x) {
+            return x.id !== _this.bullets[i].id;
+          });
+        } else _this.bullets[i].update();
+      }; //if bullets move outside canvas, delete them
+
+
+      for (var i = 0; i < _this.bullets.length; i++) {
+        _loop_2(i);
+      } // checks if character is dead
+
+
+      if (_this.character.isDead()) _this.engine.setCurrentScene(new GameOverScene_1.default(_this.engine));
+    };
+
+    _this.enter = function () {
+      _this.time = new Date().getTime();
+    };
+
+    _this.keyUpHandler = function (event) {
+      var key = event.key;
+
+      _this.character.keyupHandler(key);
+    };
+
+    _this.mouseMoveHandler = function (event) {
+      _this.character.mouseMoveHandler(event);
+    };
+
+    _this.keyDownHandler = function (event, engine) {
+      var key = event.key;
+      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1.default(_this.engine));
+      if (key == "p") engine.setCurrentScene(new PauseScene_1.default(_this.engine, _this));
+
+      _this.character.keydownHandler(key);
+    };
+
+    _this.character = new Character_1.default(_this);
+    _this.overlay = new HeadsUpDisplay_1.default(_this.character.getHealth(), _this.character.getWeapon(), _this.character.getBag());
+    return _this;
+  }
+
+  PlayingScene.prototype.nextRound = function () {
+    this.round++;
+    if (this.round > 100) this.engine.setCurrentScene(new WinningScene_1.default(this.engine, this));
+    console.log("round #" + this.round);
+    if (this.zombieSpeed < 2) this.zombieSpeed += 0.15;
+    this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
+    this.zombiesLeft = this.zombiesPerRound;
+    this.zombiesSpawned = 0;
+    if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.09 * this.difficulty;
+    console.log("round: " + this.round);
+    this.zombieBaseHP *= this.healthMultiplier;
+  };
+
+  PlayingScene.prototype.spawnZombie = function (damage, health) {
+    if ((this.time - this.lastSpawned) / 1000 >= this.secPerSpawn) {
+      var pos = Math.floor(Math.random() * 4);
+      var zombiePosition = this.spawnPosition(pos);
+      var zombie = new Zombie_1.default(zombiePosition, damage, 20, health, this.zombieSpeed);
+      this.enemies.push(zombie);
+      this.zombiesSpawned++;
+      this.lastSpawned = new Date().getTime();
+    }
+
+    return;
+  };
+
+  PlayingScene.prototype.spawnPosition = function (position) {
+    var _a = GameContext_1.default.context.canvas,
+        width = _a.width,
+        height = _a.height;
+    var spawnerMargin = Math.random() * 150;
+    var x = Math.random() * width;
+    var y = Math.random() * height;
+
+    if (position == 0) {
+      return {
+        x: -200,
+        y: y
+      };
+    } else if (position == 1) {
+      return {
+        x: x,
+        y: 0 - spawnerMargin
+      };
+    } else if (position == 2) {
+      return {
+        x: width + spawnerMargin,
+        y: y
+      };
+    } else if (position == 3) {
+      return {
+        x: x,
+        y: height + spawnerMargin
+      };
+    }
+  };
+
+  return PlayingScene;
+}(Scene_1.default);
+
+exports.default = PlayingScene;
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./PauseScene":"src/PauseScene.ts","./GameContext":"src/GameContext.ts","./WinningScene":"src/WinningScene.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts","/assets/hitmark.mp3":"assets/hitmark.mp3","./overlay/HeadsUpDisplay":"src/overlay/HeadsUpDisplay.ts"}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1820,7 +2500,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60517" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55225" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

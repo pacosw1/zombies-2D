@@ -49,11 +49,13 @@ class PlayingScene extends Scene {
     this.round++;
     if (this.round > 100)
       this.engine.setCurrentScene(new WinningScene(this.engine, this));
-    if (this.zombieSpeed < 2) this.zombieSpeed += 0.01;
+    console.log("round #" + this.round);
+    if (this.zombieSpeed < 2) this.zombieSpeed += 0.15;
     this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
     this.zombiesLeft = this.zombiesPerRound;
     this.zombiesSpawned = 0;
-    if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.07 * this.difficulty;
+    if (this.secPerSpawn > 0.35) this.secPerSpawn -= 0.09 * this.difficulty;
+    console.log("round: " + this.round);
     this.zombieBaseHP *= this.healthMultiplier;
   }
 
