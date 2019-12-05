@@ -140,9 +140,15 @@ class Character {
   //
 
   public moveLogic = xPos => {
-    this.position.x = this.position.x + this.speed * this.direction.x;
+    const { context } = GameContext;
 
-    this.position.y += this.direction.y * this.speed;
+    const { width, height } = context.canvas;
+    console.log(this.position.x + this.speed * this.direction.x);
+    console.log(width-30);
+    if(this.position.x + this.speed * this.direction.x > 30 && this.position.x + this.speed * this.direction.x < width-20 )
+      this.position.x = this.position.x + this.speed * this.direction.x;
+    if(this.position.y + this.direction.y * this.speed > 30 && this.position.y + this.direction.y * this.speed < height-40 )
+      this.position.y += this.direction.y * this.speed;
   };
 
   public update = () => {
