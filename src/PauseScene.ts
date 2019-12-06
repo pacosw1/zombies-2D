@@ -2,7 +2,6 @@ import Scene from "./Scene";
 import GameContext from "./GameContext";
 import Engine from "./Engine";
 import PlayingScene from "./PlayingScene";
-import MainMenuScene from "./MainMenuScene";
 import PrettyMainMenuScene from "./PrettyMainMenuScene";
 import bubbleSound from "/assets/bubble.wav";
 

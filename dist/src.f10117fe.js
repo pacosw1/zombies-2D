@@ -1065,116 +1065,7 @@ function () {
 }();
 
 exports["default"] = Zombie;
-},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
-"use strict";
-
-var __extends = this && this.__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (b.hasOwnProperty(p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-exports.__esModule = true;
-
-var Scene_1 = __importDefault(require("./Scene"));
-
-var GameContext_1 = __importDefault(require("./GameContext"));
-
-var PlayingScene_1 = __importDefault(require("./PlayingScene"));
-
-var MainMenuScene =
-/** @class */
-function (_super) {
-  __extends(MainMenuScene, _super);
-
-  function MainMenuScene() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
-
-    _this.currentOption = 0;
-    _this.options = ["jugar", "config", "salir"];
-
-    _this.render = function () {
-      var options = _this.options;
-      var context = GameContext_1["default"].context;
-      var _a = context.canvas,
-          width = _a.width,
-          height = _a.height;
-      context.save();
-      context.beginPath();
-      context.textAlign = "center";
-      context.fillStyle = "lime";
-      context.font = "50px 'Source Code Pro' ";
-      context.strokeStyle = "blue";
-      context.fillText("MAIN MENU", width / 2, 100);
-      context.fillStyle = "pink";
-
-      for (var i = 0; i < options.length; i++) {
-        if (i == _this.currentOption) context.strokeText(options[i], width / 2, height / 2 + i * 35 + i * 20);
-        context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 20);
-      }
-
-      context.closePath();
-      context.restore();
-    };
-
-    _this.update = function () {};
-
-    _this.enter = function () {};
-
-    _this.keyUpHandler = function (event) {};
-
-    _this.keyDownHandler = function (event, engine) {
-      var key = event.key;
-
-      switch (key) {
-        case "ArrowUp":
-          _this.currentOption = (_this.currentOption - 1 + _this.options.length) % _this.options.length;
-          break;
-
-        case "ArrowDown":
-          _this.currentOption = (_this.currentOption + 1) % _this.options.length;
-          break;
-
-        case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
-          break;
-      }
-    };
-
-    return _this;
-  }
-
-  return MainMenuScene;
-}(Scene_1["default"]);
-
-exports["default"] = MainMenuScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"assets/bubble.wav":[function(require,module,exports) {
+},{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"assets/bubble.wav":[function(require,module,exports) {
 module.exports = "/bubble.49d872f2.wav";
 },{}],"src/PauseScene.ts":[function(require,module,exports) {
 "use strict";
@@ -1586,12 +1477,10 @@ function (_super) {
     _this.characterWidth = 70;
     _this.characterHeight = 100;
     _this.currentOption = 0;
-    _this.options = ["Come back"];
     _this.currentFrame = 10;
     _this.frameCounter = 10;
 
     _this.render = function () {
-      var options = _this.options;
       var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
@@ -1969,8 +1858,6 @@ var Character_1 = __importDefault(require("./Character"));
 
 var Zombie_1 = __importDefault(require("./Zombie"));
 
-var MainMenuScene_1 = __importDefault(require("./MainMenuScene"));
-
 var PauseScene_1 = __importDefault(require("./PauseScene"));
 
 var GameContext_1 = __importDefault(require("./GameContext"));
@@ -2234,7 +2121,7 @@ function (_super) {
 
     _this.keyDownHandler = function (event, engine) {
       var key = event.key;
-      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
+      if (key == "Escape") engine.setCurrentScene(new PrettyMainMenuScene(_this.engine));
       if (key == "p") engine.setCurrentScene(new PauseScene_1["default"](_this.engine, _this));
 
       _this.character.keydownHandler(key);
@@ -2307,7 +2194,7 @@ function (_super) {
 }(Scene_1["default"]);
 
 exports["default"] = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./PauseScene":"src/PauseScene.ts","./GameContext":"src/GameContext.ts","./WinningScene":"src/WinningScene.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts","/assets/hitmark.mp3":"assets/hitmark.mp3","./overlay/HeadsUpDisplay":"src/overlay/HeadsUpDisplay.ts","./Refill":"src/Refill.ts"}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./PauseScene":"src/PauseScene.ts","./GameContext":"src/GameContext.ts","./WinningScene":"src/WinningScene.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts","/assets/hitmark.mp3":"assets/hitmark.mp3","./overlay/HeadsUpDisplay":"src/overlay/HeadsUpDisplay.ts","./Refill":"src/Refill.ts"}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -2354,12 +2241,12 @@ var GoodbyeScene_1 = __importDefault(require("./GoodbyeScene"));
 
 var bubble_wav_1 = __importDefault(require("/assets/bubble.wav"));
 
-var MainMenuScene =
+var PrettyMainMenuScene =
 /** @class */
 function (_super) {
-  __extends(MainMenuScene, _super);
+  __extends(PrettyMainMenuScene, _super);
 
-  function MainMenuScene() {
+  function PrettyMainMenuScene() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
     _this.currentOption = 0;
@@ -2432,10 +2319,10 @@ function (_super) {
     return _this;
   }
 
-  return MainMenuScene;
+  return PrettyMainMenuScene;
 }(Scene_1["default"]);
 
-exports["default"] = MainMenuScene;
+exports["default"] = PrettyMainMenuScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./GoodbyeScene":"src/GoodbyeScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
@@ -2575,7 +2462,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52473" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50658" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

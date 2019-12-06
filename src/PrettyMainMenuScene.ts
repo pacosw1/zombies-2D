@@ -6,7 +6,7 @@ import GoodbyeScene from "./GoodbyeScene";
 
 import bubbleSound from "/assets/bubble.wav";
 
-class MainMenuScene extends Scene {
+class PrettyMainMenuScene extends Scene {
   private currentOption: number = 0;
   private options = [ "Play", "Quit"];
   private choice = new Audio(bubbleSound);
@@ -74,4 +74,4 @@ class MainMenuScene extends Scene {
   };
 }
 
-export default MainMenuScene;
+export default PrettyMainMenuScene;

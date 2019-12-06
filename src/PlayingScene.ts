@@ -206,7 +206,8 @@ class PlayingScene extends Scene {
       if (this.enemies[i]) this.enemies[i].render();
     }
 
-    this.refillB.render(this.character, this.character.getWeapon(), this.character.getBag());
+    this.refillB.render(this.character, this.character.getWeapon(), this.character.getBag()
+);
 
   };
 
@@ -292,7 +293,7 @@ class PlayingScene extends Scene {
   };
   public keyDownHandler = (event: KeyboardEvent, engine: Engine) => {
     const { key } = event;
-    if (key == "Escape") engine.setCurrentScene(new MainMenuScene(this.engine));
+    if (key == "Escape") engine.setCurrentScene(new PrettyMainMenuScene(this.engine));
     if (key == "p") engine.setCurrentScene(new PauseScene(this.engine, this));
     this.character.keydownHandler(key);
   };
