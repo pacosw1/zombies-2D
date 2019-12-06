@@ -26,7 +26,10 @@ class Inventory {
     return this.bulletPouch[type];
   };
   pickUpAmmo = (type, qty) => {
-    this.bulletPouch[type] += qty;
+    if(this.bulletPouch[type] + qty > 100)
+      this.bulletPouch[type] += 100 - this.bulletPouch[type];
+    else
+      this.bulletPouch[type] += qty;
   };
   loadAmmo = () => {
     let { getMag, getMagCap, getType, load } = this.items[0];

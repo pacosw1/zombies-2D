@@ -13,6 +13,7 @@ import GameOverScene from "./GameOverScene";
 import hit from "/assets/hit.mp3";
 import hitmarkSound from "/assets/hitmark.mp3";
 import HeadsUpDisplay from "./overlay/HeadsUpDisplay";
+import Refill from "./Refill";
 
 class PlayingScene extends Scene {
   private points = 0;
@@ -34,10 +35,12 @@ class PlayingScene extends Scene {
   private hit = new Audio(hitmarkSound);
   private damage: Damage[] = [];
   private overlay: HeadsUpDisplay;
+  private refillB: Refill = null;
 
   constructor(engine: Engine) {
     super(engine);
     this.character = new Character(this);
+    this.refillB = new Refill();
     this.overlay = new HeadsUpDisplay(
       this.character.getHealth(),
       this.character.getWeapon(),
@@ -202,6 +205,9 @@ class PlayingScene extends Scene {
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i]) this.enemies[i].render();
     }
+
+    this.refillB.render(this.character, this.character.getWeapon(), this.character.getBag());
+
   };
 
   public addBullet = bullet => {

@@ -104,7 +104,19 @@ class Character {
   public updateDamage(multiplier) {
     this.damage *= 1 * multiplier;
   }
+  public outOfMag(){
+    if(this.weapon.getMag() == 0 )
+      return true;
+    return false;
+  }
 
+  public getDimensions(){
+    return {
+      w: this.characterWidth,
+      y: this.characterHeight,
+    };
+
+  }
   public keyupHandler = (key: string) => {
     if (
       (key === "d" && this.direction.x === 1) ||
@@ -159,6 +171,7 @@ class Character {
     this.healthBar.update();
     this.time = new Date().getTime();
     const { context } = GameContext;
+
 
     const { width, height } = context.canvas;
     let { x, y } = this.position;

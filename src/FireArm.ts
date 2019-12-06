@@ -20,6 +20,10 @@ abstract class FireArm {
   public abstract render = () => {};
   public abstract update = () => {};
 
+  public getMag = () => {
+    return this.mag;
+  }
+
   public fire = (
     position,
     target,
@@ -28,6 +32,7 @@ abstract class FireArm {
     lastFired,
     fireRate
   ) => {
+    console.log('magSIZE', this.ammo);
     //waits n seconds before firing a bullet (based on fire rate)
     if (this.mag === 0) {
       this.emptyGun.play();

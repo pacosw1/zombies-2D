@@ -120,9 +120,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"src/GameContext.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext =
 /** @class */
@@ -134,13 +132,11 @@ function () {
   return GameContext;
 }();
 
-exports.default = GameContext;
+exports["default"] = GameContext;
 },{}],"src/Time.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Time =
 /** @class */
@@ -160,13 +156,11 @@ function () {
   return Time;
 }();
 
-exports.default = Time;
+exports["default"] = Time;
 },{}],"src/Scene.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene =
 /** @class */
@@ -190,7 +184,7 @@ function () {
   return Scene;
 }();
 
-exports.default = Scene;
+exports["default"] = Scene;
 },{}],"assets/FinnSprite.png":[function(require,module,exports) {
 module.exports = "/FinnSprite.7fd90bfc.png";
 },{}],"assets/gunshot.mp3":[function(require,module,exports) {
@@ -204,9 +198,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -243,7 +235,7 @@ function () {
   }
 
   HP.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -270,7 +262,7 @@ function () {
   return HP;
 }();
 
-exports.default = HP;
+exports["default"] = HP;
 },{"./GameContext":"src/GameContext.ts"}],"src/Bullet.ts":[function(require,module,exports) {
 "use strict";
 
@@ -280,9 +272,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -322,7 +312,7 @@ function () {
     };
 
     this.render = function () {
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = _this.position,
           x = _a.x,
           y = _a.y;
@@ -364,7 +354,7 @@ function () {
   return Bullet;
 }();
 
-exports.default = Bullet;
+exports["default"] = Bullet;
 },{"./GameContext":"src/GameContext.ts"}],"assets/empty.mp3":[function(require,module,exports) {
 module.exports = "/empty.ba651bc1.mp3";
 },{}],"assets/reload.mp3":[function(require,module,exports) {
@@ -378,9 +368,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Bullet_1 = __importDefault(require("./Bullet"));
 
@@ -394,15 +382,20 @@ function () {
   function FireArm() {
     var _this = this;
 
-    this.emptyGun = new Audio(empty_mp3_1.default);
-    this.reloadGUn = new Audio(reload_mp3_1.default);
+    this.emptyGun = new Audio(empty_mp3_1["default"]);
+    this.reloadGUn = new Audio(reload_mp3_1["default"]);
 
     this.render = function () {};
 
     this.update = function () {};
 
+    this.getMag = function () {
+      return _this.mag;
+    };
+
     this.fire = function (position, target, bullets, time, lastFired, fireRate) {
-      //waits n seconds before firing a bullet (based on fire rate)
+      console.log('magSIZE', _this.ammo); //waits n seconds before firing a bullet (based on fire rate)
+
       if (_this.mag === 0) {
         _this.emptyGun.play();
 
@@ -413,7 +406,7 @@ function () {
 
         if ((time - lastFired) / 1000 >= 1 / fireRate) {
           console.log("fire");
-          bullets.push(new Bullet_1.default(Date.now() + target.y, position, target, 10, 10, _this.damage));
+          bullets.push(new Bullet_1["default"](Date.now() + target.y, position, target, 10, 10, _this.damage));
           _this.lastFired = new Date().getTime(); //update last time a shot was fired
 
           _this.mag--; //substract from magazine
@@ -448,7 +441,7 @@ function () {
   return FireArm;
 }();
 
-exports.default = FireArm;
+exports["default"] = FireArm;
 },{"./Bullet":"src/Bullet.ts","../assets/empty.mp3":"assets/empty.mp3","../assets/reload.mp3":"assets/reload.mp3"}],"src/weapons/assaultRifle.ts":[function(require,module,exports) {
 "use strict";
 
@@ -484,9 +477,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var FireArm_1 = __importDefault(require("../FireArm"));
 
@@ -524,15 +515,13 @@ function (_super) {
   }
 
   return AssualtRifle;
-}(FireArm_1.default);
+}(FireArm_1["default"]);
 
-exports.default = AssualtRifle;
+exports["default"] = AssualtRifle;
 },{"../FireArm":"src/FireArm.ts"}],"src/Inventory.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Inventory =
 /** @class */
@@ -553,7 +542,7 @@ function () {
     };
 
     this.pickUpAmmo = function (type, qty) {
-      _this.bulletPouch[type] += qty;
+      if (_this.bulletPouch[type] + qty > 100) _this.bulletPouch[type] += 100 - _this.bulletPouch[type];else _this.bulletPouch[type] += qty;
     };
 
     this.loadAmmo = function () {
@@ -596,7 +585,7 @@ function () {
   return Inventory;
 }();
 
-exports.default = Inventory;
+exports["default"] = Inventory;
 },{}],"src/Character.ts":[function(require,module,exports) {
 "use strict";
 
@@ -606,9 +595,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -637,7 +624,7 @@ function () {
     var _this = this;
 
     this.gravity = 9.8;
-    this.weapon = new assaultRifle_1.default();
+    this.weapon = new assaultRifle_1["default"]();
     this.lastFired = 0;
     this.health = 100;
     this.start = 0;
@@ -658,14 +645,14 @@ function () {
     this.characterHeight = 100;
     this.frameCounter = 10;
     this.currentFrame = 10;
-    this.gunshot = new Audio(gunshot_mp3_1.default);
+    this.gunshot = new Audio(gunshot_mp3_1["default"]);
     this.radius = 20;
     this.speed = 3.5;
     this.firing = false;
     this.characterImage = new Image();
     this.position = {
-      x: (GameContext_1.default.context.canvas.width - this.characterWidth) / 2,
-      y: GameContext_1.default.context.canvas.height * 0.75 - this.characterHeight
+      x: (GameContext_1["default"].context.canvas.width - this.characterWidth) / 2,
+      y: GameContext_1["default"].context.canvas.height * 0.75 - this.characterHeight
     }; //updates current mouse coordinates on screen
 
     this.mouseMoveHandler = function (event) {
@@ -746,8 +733,14 @@ function () {
 
 
     this.moveLogic = function (xPos) {
-      _this.position.x = _this.position.x + _this.speed * _this.direction.x;
-      _this.position.y += _this.direction.y * _this.speed;
+      var context = GameContext_1["default"].context;
+      var _a = context.canvas,
+          width = _a.width,
+          height = _a.height;
+      console.log(_this.position.x + _this.speed * _this.direction.x);
+      console.log(width - 30);
+      if (_this.position.x + _this.speed * _this.direction.x > 30 && _this.position.x + _this.speed * _this.direction.x < width - 20) _this.position.x = _this.position.x + _this.speed * _this.direction.x;
+      if (_this.position.y + _this.direction.y * _this.speed > 30 && _this.position.y + _this.direction.y * _this.speed < height - 40) _this.position.y += _this.direction.y * _this.speed;
     };
 
     this.update = function () {
@@ -761,7 +754,7 @@ function () {
       _this.healthBar.update();
 
       _this.time = new Date().getTime();
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -807,7 +800,7 @@ function () {
     this.render = function () {
       _this.weapon.render();
 
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = _this.position,
           x = _a.x,
           y = _a.y;
@@ -830,24 +823,36 @@ function () {
     };
 
     this.playingScene = playingScene;
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = context.canvas,
         width = _a.width,
         height = _a.height;
-    this.characterImage.src = FinnSprite_png_1.default;
+    this.characterImage.src = FinnSprite_png_1["default"];
     this.time = new Date().getTime();
-    this.bag = new Inventory_1.default(this.weapon);
-    this.healthBar = new HP_1.default(this.position, this.health, this.radius);
+    this.bag = new Inventory_1["default"](this.weapon);
+    this.healthBar = new HP_1["default"](this.position, this.health, this.radius);
   }
 
   Character.prototype.updateDamage = function (multiplier) {
     this.damage *= 1 * multiplier;
   };
 
+  Character.prototype.outOfMag = function () {
+    if (this.weapon.getMag() == 0) return true;
+    return false;
+  };
+
+  Character.prototype.getDimensions = function () {
+    return {
+      w: this.characterWidth,
+      y: this.characterHeight
+    };
+  };
+
   return Character;
 }();
 
-exports.default = Character; // public jumpLogic = (width, height, yPos) => {
+exports["default"] = Character; // public jumpLogic = (width, height, yPos) => {
 //   if (yPos < height - 50 && !this.jumping) {
 //     this.position[1] += this.gravity;
 //   } else if (this.jumping) {
@@ -864,9 +869,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -903,7 +906,7 @@ function () {
   }
 
   HP.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -930,7 +933,7 @@ function () {
   return HP;
 }();
 
-exports.default = HP;
+exports["default"] = HP;
 },{"./GameContext":"src/GameContext.ts"}],"assets/ZombieToast.png":[function(require,module,exports) {
 module.exports = "/ZombieToast.2adeb02e.png";
 },{}],"src/Zombie.ts":[function(require,module,exports) {
@@ -942,9 +945,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -1005,7 +1006,7 @@ function () {
     this.id = Date.now() + " " + position.x + "" + position.y;
     this.position = position;
     this.speed = speed;
-    this.characterImage.src = ZombieToast_png_1.default;
+    this.characterImage.src = ZombieToast_png_1["default"];
     this.health = health;
     this.damage = damage;
     this.radius = 27;
@@ -1018,7 +1019,7 @@ function () {
   };
 
   Zombie.prototype.init = function () {
-    this.healthBar = new Hp_1.default(this.position, this.health, this.radius);
+    this.healthBar = new Hp_1["default"](this.position, this.health, this.radius);
   };
 
   Zombie.prototype.update = function () {
@@ -1038,7 +1039,7 @@ function () {
   };
 
   Zombie.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -1063,7 +1064,7 @@ function () {
   return Zombie;
 }();
 
-exports.default = Zombie;
+exports["default"] = Zombie;
 },{"./GameContext":"src/GameContext.ts","./Hp":"src/Hp.ts","/assets/ZombieToast.png":"assets/ZombieToast.png"}],"src/MainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1099,9 +1100,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1122,7 +1121,7 @@ function (_super) {
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -1163,7 +1162,7 @@ function (_super) {
           break;
 
         case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
           break;
       }
     };
@@ -1172,9 +1171,9 @@ function (_super) {
   }
 
   return MainMenuScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = MainMenuScene;
+exports["default"] = MainMenuScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts"}],"assets/bubble.wav":[function(require,module,exports) {
 module.exports = "/bubble.49d872f2.wav";
 },{}],"src/PauseScene.ts":[function(require,module,exports) {
@@ -1212,9 +1211,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1234,11 +1231,11 @@ function (_super) {
 
     _this.currentOption = 0;
     _this.options = ["Resume", "Main menu"];
-    _this.choice = new Audio(bubble_wav_1.default);
+    _this.choice = new Audio(bubble_wav_1["default"]);
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -1299,7 +1296,7 @@ function (_super) {
           }
 
           if (_this.currentOption === 1) {
-            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
+            engine.setCurrentScene(new PrettyMainMenuScene_1["default"](_this.engine));
             break;
           }
 
@@ -1311,9 +1308,9 @@ function (_super) {
   }
 
   return PrettyPauseScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = PrettyPauseScene;
+exports["default"] = PrettyPauseScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"src/WinningScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1349,9 +1346,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1364,7 +1359,7 @@ var PrettyMainMenuScene_1 = __importDefault(require("./PrettyMainMenuScene"));
 var FinnSprite_png_1 = __importDefault(require("/assets/FinnSprite.png"));
 
 var characterImage = new Image();
-characterImage.src = FinnSprite_png_1.default;
+characterImage.src = FinnSprite_png_1["default"];
 
 var WinningScene =
 /** @class */
@@ -1383,7 +1378,7 @@ function (_super) {
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -1441,12 +1436,12 @@ function (_super) {
 
         case "Enter":
           if (_this.currentOption === 0) {
-            engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
+            engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
             break;
           }
 
           if (_this.currentOption === 1) {
-            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
+            engine.setCurrentScene(new PrettyMainMenuScene_1["default"](_this.engine));
             break;
           }
 
@@ -1458,9 +1453,9 @@ function (_super) {
   }
 
   return WinningScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = WinningScene;
+exports["default"] = WinningScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts","/assets/FinnSprite.png":"assets/FinnSprite.png"}],"src/Damage.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1470,9 +1465,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -1511,7 +1504,7 @@ function () {
   }
 
   Damage.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = this.position,
         x = _a.x,
         y = _a.y;
@@ -1531,7 +1524,7 @@ function () {
   return Damage;
 }();
 
-exports.default = Damage;
+exports["default"] = Damage;
 },{"./GameContext":"src/GameContext.ts"}],"src/GoodbyeScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1567,35 +1560,51 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
+var PlayingScene_1 = __importDefault(require("./PlayingScene"));
+
 var PrettyMainMenuScene_1 = __importDefault(require("./PrettyMainMenuScene"));
 
-var PrettyPauseScene =
+var FinnSprite_png_1 = __importDefault(require("/assets/FinnSprite.png"));
+
+var characterImage = new Image();
+characterImage.src = FinnSprite_png_1["default"];
+
+var GoodbyeScene =
 /** @class */
 function (_super) {
-  __extends(PrettyPauseScene, _super);
+  __extends(GoodbyeScene, _super);
 
-  function PrettyPauseScene(engine, scene) {
-    var _this = _super.call(this, engine) || this;
+  function GoodbyeScene() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
 
+    _this.characterWidth = 70;
+    _this.characterHeight = 100;
     _this.currentOption = 0;
-    _this.options = ["Resume", "Config", "Main menu"];
+    _this.options = ["Come back"];
+    _this.currentFrame = 10;
+    _this.frameCounter = 10;
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
+      var x = width / 2;
+      var y = 180;
+      var paddingY = 2;
+      var paddingX = 12;
+      var spriteHeight = 35;
+      var spriteWidth = 20;
       context.save();
       context.beginPath();
+      context.drawImage(characterImage, _this.currentFrame * (spriteWidth + paddingX), paddingY, spriteWidth, spriteHeight, x - 47.5, y - 30, _this.characterWidth, _this.characterHeight);
       context.textAlign = "center";
       context.fillStyle = "white";
       context.font = "70px 'Oswald' ";
@@ -1604,21 +1613,14 @@ function (_super) {
       context.fillStyle = "#98c695";
       context.font = "18px 'Open Sans Condensed' ";
       context.font = "35px 'Roboto Mono' ";
-
-      for (var i = 0; i < options.length; i++) {
-        if (i == _this.currentOption) {
-          context.fillStyle = "#98c695";
-          context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
-        } else context.fillStyle = "white";
-
-        context.fillText(options[i], width / 2, height / 2 + i * 35 + i * 10 + 30);
-      }
-
       context.closePath();
       context.restore();
     };
 
-    _this.update = function () {};
+    _this.update = function () {
+      if (_this.frameCounter % 15 === 0) _this.currentFrame = (_this.currentFrame + 1) % 9;
+      _this.frameCounter += 1;
+    };
 
     _this.enter = function () {};
 
@@ -1638,32 +1640,26 @@ function (_super) {
 
         case "Enter":
           if (_this.currentOption === 0) {
-            engine.setCurrentScene(_this.scene);
+            engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
             break;
           }
 
           if (_this.currentOption === 1) {
-            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
-            break;
-          }
-
-          if (_this.currentOption === 2) {
-            engine.setCurrentScene(new PrettyMainMenuScene_1.default(_this.engine));
+            engine.setCurrentScene(new PrettyMainMenuScene_1["default"](_this.engine));
             break;
           }
 
       }
     };
 
-    _this.scene = scene;
     return _this;
   }
 
-  return PrettyPauseScene;
-}(Scene_1.default);
+  return GoodbyeScene;
+}(Scene_1["default"]);
 
-exports.default = PrettyPauseScene;
-},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts"}],"src/GameOverScene.ts":[function(require,module,exports) {
+exports["default"] = GoodbyeScene;
+},{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts","/assets/FinnSprite.png":"assets/FinnSprite.png"}],"src/GameOverScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1698,9 +1694,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1722,11 +1716,11 @@ function (_super) {
 
     _this.currentOption = 0;
     _this.options = ["Play Again", "Quit"];
-    _this.choice = new Audio(bubble_wav_1.default);
+    _this.choice = new Audio(bubble_wav_1["default"]);
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -1781,8 +1775,8 @@ function (_super) {
           break;
 
         case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
-          if (_this.currentOption === 1) engine.setCurrentScene(new GoodbyeScene_1.default(_this.engine));
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
+          if (_this.currentOption === 1) engine.setCurrentScene(new GoodbyeScene_1["default"](_this.engine));
       }
     };
 
@@ -1790,9 +1784,9 @@ function (_super) {
   }
 
   return PrettyGameOverScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = PrettyGameOverScene;
+exports["default"] = PrettyGameOverScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./GoodbyeScene":"src/GoodbyeScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"assets/hitmark.mp3":[function(require,module,exports) {
 module.exports = "/hitmark.0e8c8efa.mp3";
 },{}],"src/overlay/HeadsUpDisplay.ts":[function(require,module,exports) {
@@ -1804,9 +1798,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("../GameContext"));
 
@@ -1823,7 +1815,7 @@ function () {
   }
 
   HeadsUpDisplay.prototype.render = function () {
-    var context = GameContext_1.default.context;
+    var context = GameContext_1["default"].context;
     var _a = context.canvas,
         width = _a.width,
         height = _a.height;
@@ -1848,8 +1840,93 @@ function () {
   return HeadsUpDisplay;
 }();
 
-exports.default = HeadsUpDisplay;
-},{"../GameContext":"src/GameContext.ts"}],"src/PlayingScene.ts":[function(require,module,exports) {
+exports["default"] = HeadsUpDisplay;
+},{"../GameContext":"src/GameContext.ts"}],"assets/bullet.png":[function(require,module,exports) {
+module.exports = "/bullet.6a8026eb.png";
+},{}],"src/Refill.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+exports.__esModule = true;
+
+var GameContext_1 = __importDefault(require("./GameContext"));
+
+var bullet_png_1 = __importDefault(require("/assets/bullet.png"));
+
+var scale = GameContext_1["default"].scale;
+var imagen = new Image();
+imagen.src = bullet_png_1["default"];
+
+var Refill =
+/** @class */
+function () {
+  function Refill() {
+    var _this = this;
+
+    this.position = [3 * scale, 3 * scale];
+    this.imageWidth = 50;
+    this.imageHeight = 50;
+
+    this.refillBag = function (character, weapon, bag) {
+      var _a = [character.getPosition().x, character.getPosition().y],
+          charx = _a[0],
+          chary = _a[1];
+      var _b = _this.position,
+          ammox = _b[0],
+          ammoy = _b[1];
+      var _c = [character.getDimensions().w, character.getDimensions().y],
+          cW = _c[0],
+          cH = _c[1];
+
+      if (charx < ammox + _this.imageWidth && charx + cW > ammox && chary < ammoy + _this.imageHeight && chary + cH > ammoy) {
+        bag.pickUpAmmo(weapon.getType(), 20);
+
+        _this.changePosition();
+      }
+    };
+
+    this.render = function (character, weapon, bag) {
+      _this.refillBag(character, weapon, bag);
+
+      var context = GameContext_1["default"].context;
+      var scale = GameContext_1["default"].scale;
+      var _a = _this.position,
+          x = _a[0],
+          y = _a[1];
+      context.save();
+      context.drawImage(imagen, x, y, _this.imageWidth, _this.imageHeight);
+      context.restore();
+    };
+
+    this.getPosition = function () {
+      return _this.position;
+    };
+
+    this.changePosition = function () {
+      var _a = GameContext_1["default"].context.canvas,
+          width = _a.width,
+          height = _a.height;
+      var scale = GameContext_1["default"].scale;
+      var maxX = width / scale;
+      var maxY = height / scale;
+      var newX = Math.floor(Math.random() * maxX) * scale;
+      var newY = Math.floor(Math.random() * maxY) * scale;
+      _this.position = [newX, newY];
+      console.log('new pos', newX, newY);
+      console.log('canvas', width, height);
+    };
+  }
+
+  return Refill;
+}();
+
+exports["default"] = Refill;
+},{"./GameContext":"src/GameContext.ts","/assets/bullet.png":"assets/bullet.png"}],"src/PlayingScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -1884,9 +1961,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -1909,6 +1984,8 @@ var GameOverScene_1 = __importDefault(require("./GameOverScene"));
 var hitmark_mp3_1 = __importDefault(require("/assets/hitmark.mp3"));
 
 var HeadsUpDisplay_1 = __importDefault(require("./overlay/HeadsUpDisplay"));
+
+var Refill_1 = __importDefault(require("./Refill"));
 
 var PlayingScene =
 /** @class */
@@ -1934,8 +2011,9 @@ function (_super) {
     _this.healthMultiplier = 1.33;
     _this.zombieSpeed = 0.5;
     _this.zombieBaseHP = 20;
-    _this.hit = new Audio(hitmark_mp3_1.default);
-    _this.damage = []; //done
+    _this.hit = new Audio(hitmark_mp3_1["default"]);
+    _this.damage = [];
+    _this.refillB = null; //done
 
     /**
      * 1. Player can shoot based on mouse coordiantes
@@ -1966,7 +2044,7 @@ function (_super) {
     _this.enemies = [];
 
     _this.randomizeSpawn = function () {
-      var _a = GameContext_1.default.context.canvas,
+      var _a = GameContext_1["default"].context.canvas,
           width = _a.width,
           height = _a.height;
     }; //checks for zombie and player collision
@@ -1999,7 +2077,7 @@ function (_super) {
       if (distance <= bulletPos.radius + enemyPos.radius + 10) {
         _this.points += Math.round(bullet.getDamage() / 100 + 10);
 
-        _this.damage.push(new Damage_1.default(bullet.getDamage(), 0.2, 10, bullet.getPosition()));
+        _this.damage.push(new Damage_1["default"](bullet.getDamage(), 0.2, 10, bullet.getPosition()));
 
         _this.hit.play();
 
@@ -2013,7 +2091,7 @@ function (_super) {
           });
         }
 
-        var dmg = new Damage_1.default(bullet.getDamage(), 1, 20, bullet.getPosition());
+        var dmg = new Damage_1["default"](bullet.getDamage(), 1, 20, bullet.getPosition());
         dmg.render();
         _this.bullets = _this.bullets.filter(function (bull) {
           return bull.id !== bullet.id;
@@ -2024,7 +2102,7 @@ function (_super) {
     _this.render = function () {
       _this.overlay.render();
 
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -2052,6 +2130,8 @@ function (_super) {
       for (var i = 0; i < _this.enemies.length; i++) {
         if (_this.enemies[i]) _this.enemies[i].render();
       }
+
+      _this.refillB.render(_this.character, _this.character.getWeapon(), _this.character.getBag());
     };
 
     _this.addBullet = function (bullet) {
@@ -2063,7 +2143,7 @@ function (_super) {
 
       _this.overlay.update();
 
-      var _a = GameContext_1.default.context.canvas,
+      var _a = GameContext_1["default"].context.canvas,
           width = _a.width,
           height = _a.height;
       console.log(_this.bullets.length);
@@ -2135,7 +2215,7 @@ function (_super) {
       } // checks if character is dead
 
 
-      if (_this.character.isDead()) _this.engine.setCurrentScene(new GameOverScene_1.default(_this.engine));
+      if (_this.character.isDead()) _this.engine.setCurrentScene(new GameOverScene_1["default"](_this.engine));
     };
 
     _this.enter = function () {
@@ -2154,20 +2234,21 @@ function (_super) {
 
     _this.keyDownHandler = function (event, engine) {
       var key = event.key;
-      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1.default(_this.engine));
-      if (key == "p") engine.setCurrentScene(new PauseScene_1.default(_this.engine, _this));
+      if (key == "Escape") engine.setCurrentScene(new MainMenuScene_1["default"](_this.engine));
+      if (key == "p") engine.setCurrentScene(new PauseScene_1["default"](_this.engine, _this));
 
       _this.character.keydownHandler(key);
     };
 
-    _this.character = new Character_1.default(_this);
-    _this.overlay = new HeadsUpDisplay_1.default(_this.character.getHealth(), _this.character.getWeapon(), _this.character.getBag());
+    _this.character = new Character_1["default"](_this);
+    _this.refillB = new Refill_1["default"]();
+    _this.overlay = new HeadsUpDisplay_1["default"](_this.character.getHealth(), _this.character.getWeapon(), _this.character.getBag());
     return _this;
   }
 
   PlayingScene.prototype.nextRound = function () {
     this.round++;
-    if (this.round > 100) this.engine.setCurrentScene(new WinningScene_1.default(this.engine, this));
+    if (this.round > 100) this.engine.setCurrentScene(new WinningScene_1["default"](this.engine, this));
     console.log("round #" + this.round);
     if (this.zombieSpeed < 2) this.zombieSpeed += 0.15;
     this.zombiesPerRound = Math.floor(this.round * 1.2 * (this.difficulty + 1));
@@ -2182,7 +2263,7 @@ function (_super) {
     if ((this.time - this.lastSpawned) / 1000 >= this.secPerSpawn) {
       var pos = Math.floor(Math.random() * 4);
       var zombiePosition = this.spawnPosition(pos);
-      var zombie = new Zombie_1.default(zombiePosition, damage, 20, health, this.zombieSpeed);
+      var zombie = new Zombie_1["default"](zombiePosition, damage, 20, health, this.zombieSpeed);
       this.enemies.push(zombie);
       this.zombiesSpawned++;
       this.lastSpawned = new Date().getTime();
@@ -2192,7 +2273,7 @@ function (_super) {
   };
 
   PlayingScene.prototype.spawnPosition = function (position) {
-    var _a = GameContext_1.default.context.canvas,
+    var _a = GameContext_1["default"].context.canvas,
         width = _a.width,
         height = _a.height;
     var spawnerMargin = Math.random() * 150;
@@ -2223,10 +2304,10 @@ function (_super) {
   };
 
   return PlayingScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = PlayingScene;
-},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./PauseScene":"src/PauseScene.ts","./GameContext":"src/GameContext.ts","./WinningScene":"src/WinningScene.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts","/assets/hitmark.mp3":"assets/hitmark.mp3","./overlay/HeadsUpDisplay":"src/overlay/HeadsUpDisplay.ts"}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
+exports["default"] = PlayingScene;
+},{"./Scene":"src/Scene.ts","./Character":"src/Character.ts","./Zombie":"src/Zombie.ts","./MainMenuScene":"src/MainMenuScene.ts","./PauseScene":"src/PauseScene.ts","./GameContext":"src/GameContext.ts","./WinningScene":"src/WinningScene.ts","./Damage":"src/Damage.ts","./GameOverScene":"src/GameOverScene.ts","/assets/hitmark.mp3":"assets/hitmark.mp3","./overlay/HeadsUpDisplay":"src/overlay/HeadsUpDisplay.ts","./Refill":"src/Refill.ts"}],"src/PrettyMainMenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -2261,9 +2342,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Scene_1 = __importDefault(require("./Scene"));
 
@@ -2285,11 +2364,11 @@ function (_super) {
 
     _this.currentOption = 0;
     _this.options = ["Play", "Quit"];
-    _this.choice = new Audio(bubble_wav_1.default);
+    _this.choice = new Audio(bubble_wav_1["default"]);
 
     _this.render = function () {
       var options = _this.options;
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var _a = context.canvas,
           width = _a.width,
           height = _a.height;
@@ -2345,8 +2424,8 @@ function (_super) {
           break;
 
         case "Enter":
-          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1.default(_this.engine));
-          if (_this.currentOption === 1) engine.setCurrentScene(new GoodbyeScene_1.default(_this.engine));
+          if (_this.currentOption === 0) engine.setCurrentScene(new PlayingScene_1["default"](_this.engine));
+          if (_this.currentOption === 1) engine.setCurrentScene(new GoodbyeScene_1["default"](_this.engine));
       }
     };
 
@@ -2354,9 +2433,9 @@ function (_super) {
   }
 
   return MainMenuScene;
-}(Scene_1.default);
+}(Scene_1["default"]);
 
-exports.default = MainMenuScene;
+exports["default"] = MainMenuScene;
 },{"./Scene":"src/Scene.ts","./GameContext":"src/GameContext.ts","./PlayingScene":"src/PlayingScene.ts","./GoodbyeScene":"src/GoodbyeScene.ts","/assets/bubble.wav":"assets/bubble.wav"}],"src/Engine.ts":[function(require,module,exports) {
 "use strict";
 
@@ -2366,9 +2445,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var GameContext_1 = __importDefault(require("./GameContext"));
 
@@ -2404,7 +2481,7 @@ function () {
 
 
     this.clearScreen = function () {
-      var context = GameContext_1.default.context;
+      var context = GameContext_1["default"].context;
       var canvas = context.canvas;
       var width = canvas.width;
       var height = canvas.height;
@@ -2423,7 +2500,7 @@ function () {
     };
 
     this.init = function () {
-      _this.currentScene = new PrettyMainMenuScene_1.default(_this);
+      _this.currentScene = new PrettyMainMenuScene_1["default"](_this);
 
       _this.currentScene.enter();
     }; // Método que se ejecuta en cada frame del juego.
@@ -2432,7 +2509,7 @@ function () {
     this.tick = function () {
       _this.clearScreen();
 
-      Time_1.default.update();
+      Time_1["default"].update();
 
       _this.currentScene.update();
 
@@ -2445,7 +2522,7 @@ function () {
   return Engine;
 }();
 
-exports.default = Engine;
+exports["default"] = Engine;
 },{"./GameContext":"src/GameContext.ts","./Time":"src/Time.ts","./PrettyMainMenuScene":"src/PrettyMainMenuScene.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -2455,9 +2532,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var Engine_1 = __importDefault(require("./Engine"));
 
@@ -2466,8 +2541,8 @@ var GameContext_1 = __importDefault(require("./GameContext")); //  Nota: No es n
 
 var canvas = document.getElementById("game-area");
 var context = canvas.getContext("2d");
-GameContext_1.default.context = context;
-var engine = new Engine_1.default();
+GameContext_1["default"].context = context;
+var engine = new Engine_1["default"]();
 engine.start();
 canvas.addEventListener("keydown", engine.keydownHandler);
 canvas.addEventListener("keyup", engine.keyupHandler);
@@ -2500,7 +2575,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55225" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52473" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -2531,9 +2606,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
         assetsToAccept.forEach(function (v) {
           hmrAcceptRun(v[0], v[1]);
         });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
+      } else {
+        window.location.reload();
       }
     }
 
